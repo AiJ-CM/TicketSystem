@@ -1,5 +1,8 @@
 <Solution>
   <Folder Name="/src/">
     <Project Path="src/TicketSystem.Api/TicketSystem.Api.csproj" />
+    <Project Path="TicketSystem.Application/TicketSystem.Application.csproj" Id="a9cd40ed-0b3d-4303-bb0e-efb1340b7f6d" />
+    <Project Path="TicketSystem.Domain/TicketSystem.Domain.csproj" Id="789f42fc-b3f7-4f67-97ca-d642ddb5cd21" />
+    <Project Path="TicketSystem.Infrastructure/TicketSystem.Infrastructure.csproj" Id="a7a43b7e-97bc-46e6-befe-aff8b13e9fb8" />
   </Folder>
 </Solution>

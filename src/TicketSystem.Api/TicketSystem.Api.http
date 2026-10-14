@@ -1,6 +1,17 @@
-@TicketSystem.Api_HostAddress = http://localhost:5218
+@host = https://localhost:5001
 
-GET {{TicketSystem.Api_HostAddress}}/weatherforecast/
+### 创建工单 (CreateTicket)
+POST {{host}}/api/Tickets
+Content-Type: application/json
+
+{
+  "title": "打印机无法连接",
+  "description": "办公区3号打印机无法连接网络",
+  "ticketType": "IT_SUPPORT",
+  "priority": "P2",
+  "creatorId": 1001
+}
+
+### 获取单个工单 (GetTicket)
+GET {{host}}/api/Tickets/1
 Accept: application/json
-
-###
