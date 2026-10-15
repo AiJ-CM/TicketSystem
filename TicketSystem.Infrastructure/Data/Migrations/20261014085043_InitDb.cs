@@ -1,9 +1,8 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace TicketSystem.Infrastructure.Migrations
+namespace TicketSystem.Infrastructure.Data.Migrations
 {
     /// <inheritdoc />
     public partial class InitDb : Migration

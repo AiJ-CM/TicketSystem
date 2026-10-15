@@ -7,13 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Extensions\**" />
-    <Content Remove="Extensions\**" />
-    <EmbeddedResource Remove="Extensions\**" />
-    <None Remove="Extensions\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="MediatR" Version="14.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.13" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.12" />
@@ -27,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\TicketSystem.Application\TicketSystem.Application.csproj" />
+    <ProjectReference Include="..\..\TicketSystem.Infrastructure\TicketSystem.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

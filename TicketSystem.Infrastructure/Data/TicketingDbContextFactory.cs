@@ -8,7 +8,7 @@ public class TicketingDbContextFactory : IDesignTimeDbContextFactory<TicketingDb
     public TicketingDbContext CreateDbContext(string[] args)
     {
         // 数据库链接字符串
-        var connectionString = "";
+        var connectionString = "Server=(localdb)\\mssqllocaldb;Database=TicketSystemDb;Trusted_Connection=True;MultipleActiveResultSets=true";
 
         var optionsBuilder = new DbContextOptionsBuilder<TicketingDbContext>();
         optionsBuilder.UseSqlServer(connectionString);

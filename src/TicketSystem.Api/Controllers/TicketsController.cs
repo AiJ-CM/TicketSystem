@@ -1,5 +1,7 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TicketSystem.Api.Extensions;
 using TicketSystem.Application.Tickets.Commands.CreateTicket;
 
 namespace TicketSystem.Api.Controllers;
@@ -16,8 +18,10 @@ public class TicketsController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize]
     public async Task<ActionResult<long>> CreateTicket([FromBody] CreateTicketCommand command, CancellationToken cancellationToken)
     {
+        command = command with { CreatorId = User.GetUserId() };
         var id = await _mediator.Send(command, cancellationToken);
         return CreatedAtAction(nameof(GetTicket), new { id }, id);
     }

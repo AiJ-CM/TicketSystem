@@ -9,11 +9,11 @@ using TicketSystem.Infrastructure.Data;
 
 #nullable disable
 
-namespace TicketSystem.Infrastructure.Migrations
+namespace TicketSystem.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(TicketingDbContext))]
-    [Migration("20261014085043_InitDb")]
-    partial class InitDb
+    [Migration("20261015064513_Add_UpdatedAt_To_User")]
+    partial class Add_UpdatedAt_To_User
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -122,6 +122,9 @@ namespace TicketSystem.Infrastructure.Migrations
 
                     b.Property<int>("Role")
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Username")
                         .IsRequired()

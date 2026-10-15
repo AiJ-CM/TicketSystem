@@ -2,11 +2,14 @@
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddApplicationServices(this IServiceCollection services)
+    public static IServiceCollection AddAllServices(
+         this IServiceCollection services, IConfiguration configuration)
     {
-        // 注册 MediatR
-        // services.AddMediatR(...); 
-        // 注册业务应用层服务
+        services
+            .AddPresentationServices()
+            .AddApplicationServices()
+            .AddInfrastructureServices(configuration);
+
         return services;
     }
 }

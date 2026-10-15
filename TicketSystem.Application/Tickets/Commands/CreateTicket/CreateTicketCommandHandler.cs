@@ -1,20 +1,15 @@
 ﻿using MediatR;
+using TicketSystem.Application.Common.Interfaces;
 using TicketSystem.Domain.Entities;
 using TicketSystem.Domain.Enums;
-using TicketSystem.Infrastructure.Data;
 
 namespace TicketSystem.Application.Tickets.Commands.CreateTicket;
 
-public class CreateTicketCommandHandler : IRequestHandler<CreateTicketCommand, long>
+public class CreateTicketCommandHandler(
+    ITicketingDbContext context) : IRequestHandler<CreateTicketCommand, long>
 {
-    private readonly TicketingDbContext _context;
-
-    public CreateTicketCommandHandler(TicketingDbContext context)
-    {
-        _context = context;
-    }
-
-    public async Task<long> Handle(CreateTicketCommand request, CancellationToken cancellationToken)
+    public async Task<long> Handle(
+        CreateTicketCommand request, CancellationToken cancellationToken)
     {
         var ticket = new Ticket
         {
@@ -23,12 +18,11 @@ public class CreateTicketCommandHandler : IRequestHandler<CreateTicketCommand, l
             TicketType = request.TicketType,
             Priority = request.Priority,
             CreatorId = request.CreatorId,
-            Status = TicketStatus.Open,
-            CreatedAt = DateTime.UtcNow
+            Status = TicketStatus.Open
         };
 
-        _context.Tickets.Add(ticket);
-        await _context.SaveChangesAsync(cancellationToken);
+        context.Tickets.Add(ticket);
+        await context.SaveChangesAsync(cancellationToken);
 
         return ticket.Id;
     }

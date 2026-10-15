@@ -1,8 +1,9 @@
-﻿using TicketSystem.Domain.Enums;
+﻿using TicketSystem.Domain.Entities.Common;
+using TicketSystem.Domain.Enums;
 
 namespace TicketSystem.Domain.Entities;
 
-public class User
+public class User : BaseEntity
 {
     public int Id { get; set; }
     public string Username { get; set; } = string.Empty;
@@ -11,7 +12,6 @@ public class User
     public UserRole Role { get; set; } = UserRole.User;
     public string? DisplayName { get; set; }
     public bool IsActive { get; set; } = true;
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     // 导航属性
     public ICollection<Ticket> CreatedTickets { get; set; } = new List<Ticket>();

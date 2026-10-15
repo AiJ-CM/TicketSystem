@@ -1,5 +1,24 @@
 @host = https://localhost:5001
 
+### 用户注册 (Register)
+POST {{host}}/api/auth/register
+Content-Type: application/json
+
+{
+  "username": "zhangsan",
+  "password": "123456",
+  "email": "zhangsan@example.com"
+}
+
+### 用户登录 (Login)
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "zhangsan",
+  "password": "123456"
+}
+
 ### 创建工单 (CreateTicket)
 POST {{host}}/api/Tickets
 Content-Type: application/json
