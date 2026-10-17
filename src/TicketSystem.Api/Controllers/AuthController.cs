@@ -9,21 +9,14 @@ namespace TicketSystem.Api.Controllers;
 [Route("api/[controller]")]
 public class AuthController(IMediator mediator) : ControllerBase
 {
-    [HttpPost]
+    [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterCommand request)
     {
-        try
-        {
-            var id = await mediator.Send(request);
-            return CreatedAtAction(nameof(Login), new { }, new { id });
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
+        var id = await mediator.Send(request);
+        return CreatedAtAction(nameof(Login), new { id });
     }
 
-    [HttpPost]
+    [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginQuery request)
     {
         var result = await mediator.Send(request);

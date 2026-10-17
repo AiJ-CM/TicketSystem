@@ -3,33 +3,29 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TicketSystem.Api.Extensions;
 using TicketSystem.Application.Tickets.Commands.CreateTicket;
+using TicketSystem.Application.Tickets.Queries.GetTicket;
 
 namespace TicketSystem.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class TicketsController : ControllerBase
+public class TicketsController(IMediator mediator) : ControllerBase
 {
-    private readonly IMediator _mediator;
-
-    public TicketsController(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
-
     [HttpPost]
     [Authorize]
     public async Task<ActionResult<long>> CreateTicket([FromBody] CreateTicketCommand command, CancellationToken cancellationToken)
     {
         command = command with { CreatorId = User.GetUserId() };
-        var id = await _mediator.Send(command, cancellationToken);
+        var id = await mediator.Send(command, cancellationToken);
         return CreatedAtAction(nameof(GetTicket), new { id }, id);
     }
 
     [HttpGet("{id}")]
+    [Authorize]
     public async Task<ActionResult<int>> GetTicket(long id, CancellationToken cancellationToken)
     {
-        // 下一步补
-        return Ok();
+        var query = new GetTicketQuery(id);
+        var ticketDto = await mediator.Send(query, cancellationToken);
+        return Ok(ticketDto);
     }
 }

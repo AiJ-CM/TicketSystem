@@ -9,7 +9,7 @@ public static class ClaimsPrincipalExtensions
         var claim = user.FindFirstValue(ClaimTypes.NameIdentifier);
 
         if (claim == null || !int.TryParse(claim, out var userId))
-            throw new UnauthorizedAccessException("用户未登录或Token无效");
+            throw new UnauthorizedAccessException("Authentication failed. Please log in again.");
 
         return userId;
     }
