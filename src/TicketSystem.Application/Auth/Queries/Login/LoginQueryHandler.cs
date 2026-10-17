@@ -13,7 +13,7 @@ public class LoginQueryHandler(
         LoginQuery request, CancellationToken cancellationToken)
     {
         var user = await db.Users
-            .FirstOrDefaultAsync(u => u.Username == request.Username, cancellationToken);
+            .FirstOrDefaultAsync(u => u.UserName == request.Username, cancellationToken);
 
         if (user == null
             || !user.IsActive
@@ -26,7 +26,7 @@ public class LoginQueryHandler(
 
         return new LoginResult(
             user.Id,
-            user.Username,
+            user.UserName,
             user.Email,
             token);
     }

@@ -13,7 +13,7 @@ public class RegisterCommandHandler(
         RegisterCommand request, CancellationToken cancellationToken)
     {
         // 检查用户名是否已存在
-        if (await db.Users.AnyAsync(u => u.Username == request.Username, cancellationToken))
+        if (await db.Users.AnyAsync(u => u.UserName == request.Username, cancellationToken))
         {
             throw new InvalidOperationException("Username already exists.");
         }
@@ -26,7 +26,7 @@ public class RegisterCommandHandler(
 
         var user = new User
         {
-            Username = request.Username,
+            UserName = request.Username,
             PasswordHash = HashPassword(request.Password),
             Email = request.Email,
             IsActive = true
