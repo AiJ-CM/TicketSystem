@@ -21,6 +21,12 @@ Content-Type: application/json
   "password": "!!123abc"
 }
 
+### 用户信息 (GetProfile)
+# @name login
+
+GET {{host}}/api/auth/profile
+Content-Type: application/json
+Authorization: Bearer {{login.response.body.$.token}}
 
 ### 创建工单 (CreateTicket)
 POST {{host}}/api/Tickets

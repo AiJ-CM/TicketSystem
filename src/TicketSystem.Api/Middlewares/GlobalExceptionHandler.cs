@@ -19,7 +19,7 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IE
         // 2. 根据异常类型分类，返回不同的状态码
         var statusCode = exception switch
         {
-            ValidationException ex => StatusCodes.Status400BadRequest,
+            ValidationException => StatusCodes.Status400BadRequest,
             InvalidOperationException => StatusCodes.Status400BadRequest,
             KeyNotFoundException => StatusCodes.Status404NotFound,
             UnauthorizedAccessException => StatusCodes.Status401Unauthorized,

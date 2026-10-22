@@ -4,14 +4,10 @@ using TicketSystem.Domain.Entities;
 
 namespace TicketSystem.Application.Tickets.Mappers;
 
-[Mapper]
+[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
 public static partial class TicketMapper
 {
-    // 告诉 Mapperly：
-    // 从 ticket.Creator.DisplayName 赋值给 dto.CreatorName
-    // 从 ticket.Assignee.DisplayName 赋值给 dto.AssigneeName
-    [MapProperty(nameof(Ticket.Creator) + "." + "DisplayName", nameof(TicketDto.CreatorName))]
-    [MapProperty(nameof(Ticket.Assignee) + "." + "DisplayName", nameof(TicketDto.AssigneeName))]
-    [MapperIgnoreSource(nameof(Ticket.RowVersion))]
+    [MapProperty(nameof(Ticket.Creator.DisplayName), nameof(TicketDto.CreatorName))]
+    [MapProperty(nameof(Ticket.Assignee.DisplayName), nameof(TicketDto.AssigneeName))]
     public static partial TicketDto ToDtoWithUserInfo(Ticket ticket);
 }

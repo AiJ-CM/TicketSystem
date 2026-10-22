@@ -1,6 +1,10 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using TicketSystem.Api.Extensions;
 using TicketSystem.Application.Auth.Commands.Register;
+using TicketSystem.Application.Auth.Queries.GetUser;
 using TicketSystem.Application.Auth.Queries.Login;
 
 namespace TicketSystem.Api.Controllers;
@@ -13,7 +17,11 @@ public class AuthController(IMediator mediator) : ControllerBase
     public async Task<IActionResult> Register([FromBody] RegisterCommand request)
     {
         var id = await mediator.Send(request);
-        return CreatedAtAction(nameof(Login), new { id });
+        return CreatedAtAction(
+            actionName: nameof(GetProfile),
+            routeValues: null, 
+            value: new { Id = id }
+        );
     }
 
     [HttpPost("login")]
@@ -21,5 +29,16 @@ public class AuthController(IMediator mediator) : ControllerBase
     {
         var result = await mediator.Send(request);
         return Ok(result);
+    }
+
+    [HttpGet("profile")]
+    [Authorize]
+    public async Task<IActionResult> GetProfile()
+    {
+        var userId = User.GetUserId();
+
+        var user = await mediator.Send(new GetUserProfileQuery(userId));
+
+        return Ok(user);
     }
 }

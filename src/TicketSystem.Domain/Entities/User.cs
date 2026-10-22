@@ -14,6 +14,6 @@ public class User : BaseEntity
     public bool IsActive { get; set; } = true;
 
     // 导航属性
-    public ICollection<Ticket> CreatedTickets { get; set; } = new List<Ticket>();
-    public ICollection<Ticket> AssignedTickets { get; set; } = new List<Ticket>();
+    public ICollection<Ticket> CreatedTickets { get; set; } = [];
+    public ICollection<Ticket> AssignedTickets { get; set; } = [];
 }
