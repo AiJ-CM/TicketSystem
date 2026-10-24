@@ -5,15 +5,13 @@ using TicketSystem.Domain.Entities.Common;
 
 namespace TicketSystem.Infrastructure.Data;
 
-public class TicketingDbContext : DbContext, ITicketingDbContext
+public class TicketingDbContext(DbContextOptions<TicketingDbContext> options) : DbContext(options), ITicketingDbContext
 {
-    public TicketingDbContext(DbContextOptions<TicketingDbContext> options)
-        : base(options)
-    {
-    }
-
     public DbSet<User> Users => Set<User>();
     public DbSet<Ticket> Tickets => Set<Ticket>();
+    public DbSet<TicketComment> TicketComments => Set<TicketComment>();
+    public DbSet<TicketAudit> TicketAudits => Set<TicketAudit>();
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

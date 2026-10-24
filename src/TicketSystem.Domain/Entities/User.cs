@@ -13,7 +13,8 @@ public class User : BaseEntity
     public string? DisplayName { get; set; }
     public bool IsActive { get; set; } = true;
 
-    // 导航属性
     public ICollection<Ticket> CreatedTickets { get; set; } = [];
     public ICollection<Ticket> AssignedTickets { get; set; } = [];
+    public ICollection<TicketAudit> Audits { get; set; } = [];
+    public ICollection<TicketComment> Comments { get; set; } = [];
 }

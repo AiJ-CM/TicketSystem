@@ -50,8 +50,10 @@ namespace TicketSystem.Infrastructure.Data.Migrations
                         .HasMaxLength(2000)
                         .HasColumnType("nvarchar(2000)");
 
-                    b.Property<int>("Priority")
-                        .HasColumnType("int");
+                    b.Property<string>("Priority")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
@@ -59,8 +61,10 @@ namespace TicketSystem.Infrastructure.Data.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("TicketNo")
                         .IsRequired()
@@ -86,6 +90,89 @@ namespace TicketSystem.Infrastructure.Data.Migrations
                     b.HasIndex("CreatorId");
 
                     b.ToTable("Tickets", (string)null);
+                });
+
+            modelBuilder.Entity("TicketSystem.Domain.Entities.TicketAudit", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("BusinessNote")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("NewValue")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("OldValue")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int>("OperatorId")
+                        .HasColumnType("int");
+
+                    b.Property<long>("TicketId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OperatorId");
+
+                    b.HasIndex("TicketId");
+
+                    b.ToTable("TicketAudits");
+                });
+
+            modelBuilder.Entity("TicketSystem.Domain.Entities.TicketComment", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<int>("CommenterId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsInternal")
+                        .HasColumnType("bit");
+
+                    b.Property<long>("TicketId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CommenterId");
+
+                    b.HasIndex("TicketId");
+
+                    b.ToTable("TicketComments");
                 });
 
             modelBuilder.Entity("TicketSystem.Domain.Entities.User", b =>
@@ -150,9 +237,58 @@ namespace TicketSystem.Infrastructure.Data.Migrations
                     b.Navigation("Creator");
                 });
 
+            modelBuilder.Entity("TicketSystem.Domain.Entities.TicketAudit", b =>
+                {
+                    b.HasOne("TicketSystem.Domain.Entities.User", "Operator")
+                        .WithMany("Audits")
+                        .HasForeignKey("OperatorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("TicketSystem.Domain.Entities.Ticket", "Ticket")
+                        .WithMany("Audits")
+                        .HasForeignKey("TicketId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Operator");
+
+                    b.Navigation("Ticket");
+                });
+
+            modelBuilder.Entity("TicketSystem.Domain.Entities.TicketComment", b =>
+                {
+                    b.HasOne("TicketSystem.Domain.Entities.User", "Commenter")
+                        .WithMany("Comments")
+                        .HasForeignKey("CommenterId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("TicketSystem.Domain.Entities.Ticket", "Ticket")
+                        .WithMany("Comments")
+                        .HasForeignKey("TicketId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Commenter");
+
+                    b.Navigation("Ticket");
+                });
+
+            modelBuilder.Entity("TicketSystem.Domain.Entities.Ticket", b =>
+                {
+                    b.Navigation("Audits");
+
+                    b.Navigation("Comments");
+                });
+
             modelBuilder.Entity("TicketSystem.Domain.Entities.User", b =>
                 {
                     b.Navigation("AssignedTickets");
+
+                    b.Navigation("Audits");
+
+                    b.Navigation("Comments");
 
                     b.Navigation("CreatedTickets");
                 });

@@ -39,16 +39,6 @@ public class CreateTicketCommandValidatorTests
     }
 
     [Fact]
-    public void TicketType_Should_Not_Be_Empty()
-    {
-        var command = TestDataFactory.CreateCommand() with { TicketType = "" };
-
-        var result = _validator.TestValidate(command);
-
-        result.ShouldHaveValidationErrorFor(x => x.TicketType);
-    }
-
-    [Fact]
     public void CreatorId_Should_Be_Greater_Than_Zero()
     {
         var command = TestDataFactory.CreateCommand() with { CreatorId = 0 };

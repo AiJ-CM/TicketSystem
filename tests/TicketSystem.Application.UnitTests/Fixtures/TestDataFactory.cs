@@ -25,7 +25,7 @@ public static class TestDataFactory
         Id = 100,
         Title = "默认测试工单",
         Description = "这是一段测试描述",
-        TicketType = "Bug",
+        TicketType = TicketType.Bug,
         Priority = TicketPriority.High,
         CreatorId = DefaultCreator.Id,
         Creator = DefaultCreator,
@@ -46,7 +46,7 @@ public static class TestDataFactory
         User? assignee = null,
         string title = "默认工单",
         string description = "测试描述",
-        string ticketType = "Bug",
+        TicketType ticketType = TicketType.Bug,
         TicketPriority priority = TicketPriority.High)
     {
         var c = creator ?? DefaultCreator;
@@ -69,7 +69,7 @@ public static class TestDataFactory
     public static CreateTicketCommand CreateCommand(
         string title = "这是一个正常的标题",
         string description = "这是一段正常的描述内容",
-        string ticketType = "Bug",
+        TicketType ticketType = TicketType.Bug,
         TicketPriority priority = TicketPriority.High,
         int creatorId = 1)
     {

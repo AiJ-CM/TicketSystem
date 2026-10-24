@@ -15,8 +15,7 @@ public class CreateTicketCommandValidator : AbstractValidator<CreateTicketComman
             .MaximumLength(2000).WithMessage("Description must be at most 2000 characters");
 
         RuleFor(x => x.TicketType)
-            .NotEmpty().WithMessage("Ticket type is required")
-            .MaximumLength(50).WithMessage("Ticket type must be at most 50 characters");
+            .IsInEnum().WithMessage("Invalid ticket type");
 
         RuleFor(x => x.Priority)
             .IsInEnum().WithMessage("Invalid priority");

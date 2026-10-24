@@ -54,7 +54,7 @@ public class CreateTicketCommandHandlerTests
         var command = TestDataFactory.CreateCommand(
             title: "支付失败",
             description: "订单支付超时",
-            ticketType: "Bug",
+            ticketType: TicketType.Bug,
             priority: TicketPriority.Medium,
             creatorId: 42);
 
@@ -65,7 +65,7 @@ public class CreateTicketCommandHandlerTests
         added.Should().NotBeNull();
         added.Title.Should().Be("支付失败");
         added.Description.Should().Be("订单支付超时");
-        added.TicketType.Should().Be("Bug");
+        added.TicketType.Should().Be(TicketType.Bug);
         added.Priority.Should().Be(TicketPriority.Medium);
         added.CreatorId.Should().Be(42);
     }

@@ -13,7 +13,7 @@ public class Ticket : BaseEntity
     // 关联用户
     public int CreatorId { get; set; }
     public int? AssigneeId { get; set; }
-    public string TicketType { get; set; } = "IT_SUPPORT";
+    public TicketType TicketType { get; set; }
     public TicketPriority Priority { get; set; } = TicketPriority.Medium;
     public DateTime? AssignedAt { get; set; }
     public DateTime? ClosedAt { get; set; }
@@ -21,4 +21,6 @@ public class Ticket : BaseEntity
 
     public User Creator { get; set; } = null!;
     public User? Assignee { get; set; }
+    public ICollection<TicketComment> Comments { get; set; } = [];
+    public ICollection<TicketAudit> Audits { get; set; } = [];
 }

@@ -6,6 +6,6 @@ namespace TicketSystem.Application.Tickets.Commands.CreateTicket;
 public record CreateTicketCommand(
     string Title,
     string Description,
-    string TicketType,
+    TicketType TicketType,
     TicketPriority Priority,
     int CreatorId) : IRequest<long>;

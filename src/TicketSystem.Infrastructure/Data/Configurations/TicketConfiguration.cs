@@ -22,18 +22,21 @@ public class TicketConfiguration : IEntityTypeConfiguration<Ticket>
         builder.Property(t => t.Description)
             .HasMaxLength(2000);
 
-        builder.Property(t => t.Status)
-            .IsRequired();
-
         builder.Property(t => t.CreatorId)
             .IsRequired();
 
-        builder.Property(t => t.TicketType)
-            .IsRequired()
-            .HasMaxLength(50);
+        builder.Property(t => t.Status)
+            .HasConversion<string>()
+            .HasMaxLength(20);
 
         builder.Property(t => t.Priority)
-            .IsRequired();
+            .HasConversion<string>()
+            .HasMaxLength(20);
+
+        builder.Property(t => t.TicketType)
+            .HasConversion<string>()
+            .HasMaxLength(50);
+
 
         // 关键：把 RowVersion 配置成 SQL Server 的 rowversion 并发令牌
         builder.Property(t => t.RowVersion)
