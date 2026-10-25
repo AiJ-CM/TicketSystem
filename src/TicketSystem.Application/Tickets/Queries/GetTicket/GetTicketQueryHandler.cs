@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
+using TicketSystem.Application.Common.Exceptions;
 using TicketSystem.Application.Common.Interfaces;
 using TicketSystem.Application.Tickets.Dtos;
 using TicketSystem.Application.Tickets.Mappers;
@@ -15,6 +16,8 @@ public class GetTicketQueryHandler(ITicketingDbContext context) : IRequestHandle
             .Include(t => t.Assignee)
             .FirstOrDefaultAsync(t => t.Id == request.Id, cancellationToken);
 
-        return ticket is null ? throw new KeyNotFoundException($"工单 {request.Id} 不存在") : TicketMapper.ToDtoWithUserInfo(ticket);
+        return ticket == null
+            ? throw new BusinessException($"工单 {request.Id} 不存在", ErrorCodeEnum.TicketNotFound)
+            : TicketMapper.ToDtoWithUserInfo(ticket);
     }
 }

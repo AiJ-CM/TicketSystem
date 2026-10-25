@@ -1,57 +1,78 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Diagnostics;
 using System.Text.Json;
+using TicketSystem.Application.Common.Exceptions;
 
 namespace TicketSystem.Api.Middlewares;
 
 public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IExceptionHandler
 {
+    private static readonly JsonSerializerOptions JsonOptions = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        WriteIndented = false
+    };
+
     public async ValueTask<bool> TryHandleAsync(
         HttpContext httpContext,
         Exception exception,
         CancellationToken cancellationToken)
     {
-        // 1. 记录异常日志
-        logger.LogError(exception, "Unhandled exception occurred at {Time}", DateTime.UtcNow);
+        var requestId = httpContext.TraceIdentifier
+            ?? Guid.NewGuid().ToString("N")[..8];
+
+        logger.LogError(
+            exception,
+            "Request {RequestId} failed at {Time} with {StatusCode}",
+            requestId,
+            DateTime.UtcNow,
+            exception switch
+            {
+                BusinessException => 400,
+                ValidationException => 400,
+                _ => 500
+            });
 
         httpContext.Response.ContentType = "application/json";
 
-        // 2. 根据异常类型分类，返回不同的状态码
-        var statusCode = exception switch
+        var (statusCode, errorCode, userMessage, details) = exception switch
         {
-            ValidationException => StatusCodes.Status400BadRequest,
-            InvalidOperationException => StatusCodes.Status400BadRequest,
-            KeyNotFoundException => StatusCodes.Status404NotFound,
-            UnauthorizedAccessException => StatusCodes.Status401Unauthorized,
-            _ => StatusCodes.Status500InternalServerError
+            BusinessException bizEx => (
+                StatusCodes.Status400BadRequest,
+                bizEx.ErrorCode ?? "BusinessError",
+                bizEx.Message,
+                bizEx.InnerException?.Message
+            ),
+            ValidationException valEx => (
+                StatusCodes.Status400BadRequest,
+                "ValidationError",
+                "请求参数校验失败",
+                string.Join("; ", valEx.Errors.Select(e => e.ErrorMessage))
+            ),
+            _ => (
+                StatusCodes.Status500InternalServerError,
+                "InternalServerError",
+                "服务器内部错误，请稍后重试",
+                null
+            )
         };
 
         httpContext.Response.StatusCode = statusCode;
 
-        // 3. 统一错误响应格式
         var errorResponse = new
         {
-            statusCode,
-            error = GetErrorMessage(statusCode),
-            details = exception.Message,
-            path = httpContext.Request.Path.Value,
-            method = httpContext.Request.Method
+            success = false,
+            code = statusCode,
+            requestId,
+            errorCode,
+            message = userMessage,
+            details,
+            timestamp = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss")
         };
 
         await httpContext.Response.WriteAsync(
-            JsonSerializer.Serialize(errorResponse), cancellationToken);
+          JsonSerializer.Serialize(errorResponse, JsonOptions), cancellationToken);
 
         return true;
     }
-
-    /// <summary>
-    /// 根据状态码返回友好的错误提示
-    /// </summary>
-    private static string GetErrorMessage(int statusCode) => statusCode switch
-    {
-        400 => "Request parameter or business logic error",
-        401 => "Unauthorized, please log in first",
-        404 => "Requested resource not found",
-        _ => "Internal server error, please try again later"
-    };
 }

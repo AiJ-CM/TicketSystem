@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
+using TicketSystem.Application.Common.Exceptions;
 using TicketSystem.Application.Common.Interfaces;
 using static BCrypt.Net.BCrypt;
 
@@ -15,11 +16,9 @@ public class LoginQueryHandler(
         var user = await db.Users
             .FirstOrDefaultAsync(u => u.UserName == request.Username, cancellationToken);
 
-        if (user == null
-            || !user.IsActive
-            || !Verify(request.Password, user.PasswordHash))
+        if (user == null || !user.IsActive || !Verify(request.Password, user.PasswordHash))
         {
-            throw new InvalidOperationException("Invalid username or password");
+            throw new BusinessException("Invalid username or password", ErrorCodeEnum.LoginFailed);
         }
 
         var token = tokenService.CreateToken(user);
@@ -27,7 +26,6 @@ public class LoginQueryHandler(
         return new LoginResult(
             user.Id,
             user.UserName,
-            user.Email,
             token);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
+using TicketSystem.Application.Common.Exceptions;
 using TicketSystem.Application.Common.Interfaces;
 using TicketSystem.Domain.Entities;
 using static BCrypt.Net.BCrypt;
@@ -12,16 +13,14 @@ public class RegisterCommandHandler(
     public async Task<long> Handle(
         RegisterCommand request, CancellationToken cancellationToken)
     {
-        // 检查用户名是否已存在
         if (await db.Users.AnyAsync(u => u.UserName == request.Username, cancellationToken))
         {
-            throw new InvalidOperationException("Username already exists.");
+            throw new BusinessException("Username already exists.", ErrorCodeEnum.UserCodeDuplicate);
         }
 
-        // 检查邮箱是否已存在
         if (await db.Users.AnyAsync(u => u.Email == request.Email, cancellationToken))
         {
-            throw new InvalidOperationException("Email is already registered.");
+            throw new BusinessException("Email is already registered.", ErrorCodeEnum.EmailDuplicate);
         }
 
         var user = new User

@@ -3,5 +3,4 @@
 public record LoginResult(
     long Id,
     string Username,
-    string Email,
     string Token);

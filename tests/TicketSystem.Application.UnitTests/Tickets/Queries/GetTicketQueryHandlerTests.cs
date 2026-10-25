@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using Moq;
 using Moq.EntityFrameworkCore;
+using TicketSystem.Application.Common.Exceptions;
 using TicketSystem.Application.Common.Interfaces;
 using TicketSystem.Application.Tickets.Queries.GetTicket;
 using TicketSystem.Application.UnitTests.Fixtures;
@@ -47,14 +48,14 @@ public class GetTicketQueryHandlerTests
     }
 
     [Fact]
-    public async Task Handle_Should_Throw_KeyNotFoundException_When_Ticket_Not_Found()
+    public async Task Handle_Should_Throw_BusinessException_When_Ticket_Not_Found()
     {
         _contextMock.Setup(x => x.Tickets).ReturnsDbSet([]);
 
         var act = async () => await _handler.Handle(
             new GetTicketQuery(TestDataFactory.NonExistentTicketId), CancellationToken.None);
 
-        await act.Should().ThrowAsync<KeyNotFoundException>()
+        await act.Should().ThrowAsync<BusinessException>()
             .WithMessage($"*工单 {TestDataFactory.NonExistentTicketId} 不存在*");
     }
 }

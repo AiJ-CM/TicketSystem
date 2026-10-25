@@ -14,7 +14,7 @@ public class ValidationBehavior<TRequest, TResponse>(
         CancellationToken cancellationToken)
     {
         if (!validators.Any())
-            return await next();
+            return await next(cancellationToken);
 
         var context = new ValidationContext<TRequest>(request);
 
@@ -26,9 +26,9 @@ public class ValidationBehavior<TRequest, TResponse>(
             .Where(e => e != null)
             .ToList();
 
-        if (errors.Any())
+        if (errors.Count != 0)
             throw new ValidationException(errors);
 
-        return await next();
+        return await next(cancellationToken);
     }
 }
