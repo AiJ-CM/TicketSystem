@@ -4,18 +4,18 @@ using TicketSystem.Application.Common.Interfaces;
 using TicketSystem.Application.Common.Models;
 using TicketSystem.Application.Tickets.Dtos;
 using TicketSystem.Application.Tickets.Mappers;
-using TicketSystem.Domain.Entities;
 
 namespace TicketSystem.Application.Tickets.Queries.GetTicketList;
 
-internal class GetTicketListQueryHandler(
+public class GetTicketListQueryHandler(
     ITicketingDbContext context) : IRequestHandler<GetTicketListQuery, PagedList<TicketDto>>
 {
     public async Task<PagedList<TicketDto>> Handle(GetTicketListQuery request, CancellationToken cancellationToken)
     {
-        IQueryable<Ticket> query = context.Tickets
-            .AsNoTracking()
-            .OrderByDescending(t => t.CreatedAt); // 默认按创建时间倒序
+        var query = context.Tickets
+            .Include(t => t.Creator)
+            .Include(t => t.Assignee)
+            .AsNoTracking();
 
         if (request.Status.HasValue)
         {
@@ -33,6 +33,8 @@ internal class GetTicketListQueryHandler(
         var totalItems = await query.CountAsync(cancellationToken);
 
         var tickets = await query
+            .OrderByDescending(t => t.CreatedAt)
+            .ThenByDescending(t => t.Id)
             .Skip((request.PageIndex - 1) * request.PageSize)
             .Take(request.PageSize)
             .ToListAsync(cancellationToken);

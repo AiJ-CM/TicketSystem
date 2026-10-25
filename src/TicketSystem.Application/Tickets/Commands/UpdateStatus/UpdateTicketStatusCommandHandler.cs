@@ -7,7 +7,7 @@ using TicketSystem.Domain.Enums;
 
 namespace TicketSystem.Application.Tickets.Commands.UpdateStatus;
 
-public class UpdateTicketStatusHandler(ITicketingDbContext context) : IRequestHandler<UpdateTicketStatusCommand>
+public class UpdateTicketStatusCommandHandler(ITicketingDbContext context) : IRequestHandler<UpdateTicketStatusCommand>
 {
     public async Task Handle(UpdateTicketStatusCommand request, CancellationToken cancellationToken)
     {

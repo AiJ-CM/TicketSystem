@@ -6,7 +6,7 @@ using TicketSystem.Domain.Enums;
 
 namespace TicketSystem.Application.Tickets.Commands.AssignTicket;
 
-public class AssignTicketHandler(ITicketingDbContext context) : IRequestHandler<AssignTicketCommand>
+public class AssignTicketCommandHandler(ITicketingDbContext context) : IRequestHandler<AssignTicketCommand>
 {
     public async Task Handle(AssignTicketCommand request, CancellationToken cancellationToken)
     {
