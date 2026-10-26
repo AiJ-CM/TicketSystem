@@ -2,11 +2,10 @@
 
 namespace TicketSystem.Domain.Entities;
 
-public class TicketComment : BaseEntity
+public class TicketComment : AuditEntity
 {
-    public long Id { get; set; }
     public long TicketId { get; set; }
-    public int CommenterId { get; set; }
+    public long CommenterId { get; set; }
 
     public string Content { get; set; } = string.Empty;
     public bool IsInternal { get; set; }

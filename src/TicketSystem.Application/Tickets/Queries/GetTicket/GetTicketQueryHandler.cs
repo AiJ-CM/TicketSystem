@@ -12,7 +12,6 @@ public class GetTicketQueryHandler(ITicketingDbContext context) : IRequestHandle
     public async Task<TicketDto> Handle(GetTicketQuery request, CancellationToken cancellationToken)
     {
         var ticket = await context.Tickets
-            .Include(t => t.Creator)
             .Include(t => t.Assignee)
             .FirstOrDefaultAsync(t => t.Id == request.Id, cancellationToken);
 

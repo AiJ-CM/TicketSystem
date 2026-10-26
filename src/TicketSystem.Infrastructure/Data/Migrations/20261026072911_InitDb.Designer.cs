@@ -12,8 +12,8 @@ using TicketSystem.Infrastructure.Data;
 namespace TicketSystem.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(TicketingDbContext))]
-    [Migration("20261024111616_Add_Audit_Comment")]
-    partial class Add_Audit_Comment
+    [Migration("20261026072911_InitDb")]
+    partial class InitDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -36,8 +36,8 @@ namespace TicketSystem.Infrastructure.Data.Migrations
                     b.Property<DateTime?>("AssignedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("AssigneeId")
-                        .HasColumnType("int");
+                    b.Property<long?>("AssigneeId")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime?>("ClosedAt")
                         .HasColumnType("datetime2");
@@ -45,13 +45,26 @@ namespace TicketSystem.Infrastructure.Data.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatorId")
-                        .HasColumnType("int");
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("CreatorId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(2000)
                         .HasColumnType("nvarchar(2000)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Priority")
                         .IsRequired()
@@ -85,6 +98,9 @@ namespace TicketSystem.Infrastructure.Data.Migrations
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -123,14 +139,11 @@ namespace TicketSystem.Infrastructure.Data.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<int>("OperatorId")
-                        .HasColumnType("int");
+                    b.Property<long>("OperatorId")
+                        .HasColumnType("bigint");
 
                     b.Property<long>("TicketId")
                         .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -149,8 +162,8 @@ namespace TicketSystem.Infrastructure.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<int>("CommenterId")
-                        .HasColumnType("int");
+                    b.Property<long>("CommenterId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -160,6 +173,19 @@ namespace TicketSystem.Infrastructure.Data.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsInternal")
                         .HasColumnType("bit");
 
@@ -168,6 +194,9 @@ namespace TicketSystem.Infrastructure.Data.Migrations
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -180,16 +209,26 @@ namespace TicketSystem.Infrastructure.Data.Migrations
 
             modelBuilder.Entity("TicketSystem.Domain.Entities.User", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("getutcdate()");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -202,6 +241,9 @@ namespace TicketSystem.Infrastructure.Data.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasMaxLength(256)
@@ -212,6 +254,9 @@ namespace TicketSystem.Infrastructure.Data.Migrations
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserName")
                         .IsRequired()

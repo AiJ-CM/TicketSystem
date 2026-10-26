@@ -13,7 +13,7 @@ public class GetTicketListQueryHandler(
     public async Task<PagedList<TicketDto>> Handle(GetTicketListQuery request, CancellationToken cancellationToken)
     {
         var query = context.Tickets
-            .Include(t => t.Creator)
+            .Include(t => t.CreatedBy)
             .Include(t => t.Assignee)
             .AsNoTracking();
 

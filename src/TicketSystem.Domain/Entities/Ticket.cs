@@ -3,16 +3,15 @@ using TicketSystem.Domain.Enums;
 
 namespace TicketSystem.Domain.Entities;
 
-public class Ticket : BaseEntity
+public class Ticket : AuditEntity
 {
-    public long Id { get; set; }
-    public string TicketNo { get; set; } = string.Empty;  // 工单编号
+    public string TicketNo { get; set; } = string.Empty;
     public string Title { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public TicketStatus Status { get; set; } = TicketStatus.Open;
     // 关联用户
-    public int CreatorId { get; set; }
-    public int? AssigneeId { get; set; }
+    public long CreatorId { get; set; }
+    public long? AssigneeId { get; set; }
     public TicketType TicketType { get; set; }
     public TicketPriority Priority { get; set; } = TicketPriority.Medium;
     public DateTime? AssignedAt { get; set; }

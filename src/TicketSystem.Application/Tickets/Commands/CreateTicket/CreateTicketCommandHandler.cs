@@ -17,11 +17,11 @@ public class CreateTicketCommandHandler(
             Description = request.Description,
             TicketType = request.TicketType,
             Priority = request.Priority,
-            CreatorId = request.CreatorId,
             Status = TicketStatus.Open
         };
 
         context.Tickets.Add(ticket);
+
         await context.SaveChangesAsync(cancellationToken);
 
         return ticket.Id;

@@ -18,7 +18,6 @@ public class TicketDto
     public DateTime? ClosedAt { get; init; }
 
     // --- 关联用户信息 ---
-    public int CreatorId { get; init; }
     public string? CreatorName { get; init; }
     public int? AssigneeId { get; init; }
     public string? AssigneeName { get; init; }

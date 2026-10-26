@@ -28,6 +28,16 @@ public class TicketingDbContext(DbContextOptions<TicketingDbContext> options) : 
 
         foreach (var entry in ChangeTracker.Entries<BaseEntity>())
         {
+            if (entry.State == EntityState.Deleted)
+            {
+                entry.State = EntityState.Modified;
+                entry.Entity.IsDeleted = true;
+                entry.Entity.DeletedAt = now;
+            }
+        }
+
+        foreach (var entry in ChangeTracker.Entries<AuditEntity>())
+        {
             if (entry.State == EntityState.Added)
             {
                 entry.Entity.CreatedAt = now;
