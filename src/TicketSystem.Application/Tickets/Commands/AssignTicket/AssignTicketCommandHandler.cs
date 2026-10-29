@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
 using TicketSystem.Application.Common.Exceptions;
 using TicketSystem.Application.Common.Interfaces;
 using TicketSystem.Domain.Entities;
@@ -10,7 +11,7 @@ public class AssignTicketCommandHandler(ITicketingDbContext context) : IRequestH
 {
     public async Task Handle(AssignTicketCommand request, CancellationToken cancellationToken)
     {
-        var ticket = await context.Tickets.FindAsync([request.TicketId], cancellationToken)
+        var ticket = await context.Tickets.FirstOrDefaultAsync(t => t.Id == request.TicketId, cancellationToken)
             ?? throw new BusinessException("工单不存在", ErrorCodeEnum.TicketNotFound);
 
         var oldAssigneeId = ticket.AssigneeId;
@@ -25,7 +26,8 @@ public class AssignTicketCommandHandler(ITicketingDbContext context) : IRequestH
             Action = TicketAuditAction.Assigned,
             OldValue = oldAssigneeId?.ToString(),
             NewValue = request.AssigneeId.ToString(),
-            BusinessNote = businessNote
+            BusinessNote = businessNote,
+            CreatedAt = DateTime.UtcNow
         };
 
         context.TicketAudits.Add(auditLog);

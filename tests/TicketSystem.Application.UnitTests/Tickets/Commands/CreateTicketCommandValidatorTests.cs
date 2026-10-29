@@ -39,16 +39,6 @@ public class CreateTicketCommandValidatorTests
     }
 
     [Fact]
-    public void CreatorId_Should_Be_Greater_Than_Zero()
-    {
-        var command = TestDataFactory.CreateCommand() with { CreatorId = 0 };
-
-        var result = _validator.TestValidate(command);
-
-        result.ShouldHaveValidationErrorFor(x => x.CreatorId);
-    }
-
-    [Fact]
     public void Should_Not_Have_Error_For_Valid_Command()
     {
         var command = TestDataFactory.CreateCommand();
@@ -59,6 +49,5 @@ public class CreateTicketCommandValidatorTests
         result.ShouldNotHaveValidationErrorFor(x => x.Description);
         result.ShouldNotHaveValidationErrorFor(x => x.TicketType);
         result.ShouldNotHaveValidationErrorFor(x => x.Priority);
-        result.ShouldNotHaveValidationErrorFor(x => x.CreatorId);
     }
 }

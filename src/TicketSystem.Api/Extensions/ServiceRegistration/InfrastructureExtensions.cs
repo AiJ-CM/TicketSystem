@@ -17,19 +17,26 @@ public static class InfrastructureExtensions
         var jwtSettings = configuration.GetSection("JwtSettings").Get<JwtSettings>() ?? new JwtSettings();
         services.AddSingleton(jwtSettings);
 
-        // 2. 注册数据库
-        services.AddDbContext<TicketingDbContext>(options =>
-            options.UseSqlServer(configuration.GetConnectionString("TicketDb")));
+        // 2. 注册数据库和拦截器
+        services.AddScoped<AuditableEntityInterceptor>();
+
+        services.AddDbContext<ITicketingDbContext, TicketingDbContext>((sp, options) =>
+        {
+            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+            options.AddInterceptors(sp.GetRequiredService<AuditableEntityInterceptor>());
+        });
 
         // 3. 注册自定义数据库接口
         services.AddScoped<ITicketingDbContext>(sp =>
             sp.GetRequiredService<TicketingDbContext>());
 
-        // 4. 注册 Token 服务
+        // 4. 注册服务
         services.AddScoped<ITokenService, TokenService>();
+        services.AddScoped<IAuditLogService, AuditLogService>();
 
         // 5. 注册 Http Context 访问器
         services.AddHttpContextAccessor();
+        services.AddScoped<ICurrentUser, CurrentUser>();
 
         // 6. 注册 JWT 认证
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

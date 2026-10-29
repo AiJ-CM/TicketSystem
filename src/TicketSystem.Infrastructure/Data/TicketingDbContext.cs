@@ -12,44 +12,11 @@ public class TicketingDbContext(DbContextOptions<TicketingDbContext> options) : 
     public DbSet<TicketComment> TicketComments => Set<TicketComment>();
     public DbSet<TicketAudit> TicketAudits => Set<TicketAudit>();
 
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(TicketingDbContext).Assembly);
-    }
-
-
-    public override Task<int> SaveChangesAsync(
-        CancellationToken cancellationToken = default)
-    {
-        var now = DateTime.UtcNow;
-
-        foreach (var entry in ChangeTracker.Entries<BaseEntity>())
-        {
-            if (entry.State == EntityState.Deleted)
-            {
-                entry.State = EntityState.Modified;
-                entry.Entity.IsDeleted = true;
-                entry.Entity.DeletedAt = now;
-            }
-        }
-
-        foreach (var entry in ChangeTracker.Entries<AuditEntity>())
-        {
-            if (entry.State == EntityState.Added)
-            {
-                entry.Entity.CreatedAt = now;
-                entry.Entity.UpdatedAt = now;
-            }
-
-            if (entry.State == EntityState.Modified)
-            {
-                entry.Entity.UpdatedAt = now;
-            }
-        }
-
-        return base.SaveChangesAsync(cancellationToken);
+        modelBuilder.Entity<BaseEntity>().HasQueryFilter(u => !u.IsDeleted);
     }
 }

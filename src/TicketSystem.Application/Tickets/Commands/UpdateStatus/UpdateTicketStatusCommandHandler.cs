@@ -9,13 +9,13 @@ namespace TicketSystem.Application.Tickets.Commands.UpdateStatus;
 
 public class UpdateTicketStatusCommandHandler(ITicketingDbContext context) : IRequestHandler<UpdateTicketStatusCommand>
 {
-    public async Task Handle(UpdateTicketStatusCommand request, CancellationToken cancellationToken)
+    public async Task Handle(UpdateTicketStatusCommand command, CancellationToken cancellationToken)
     {
-        var ticket = await context.Tickets.FindAsync([request.TicketId], cancellationToken)
+        var ticket = await context.Tickets.FindAsync([command.TicketId], cancellationToken)
             ?? throw new BusinessException("工单不存在", ErrorCodeEnum.TicketNotFound);
 
         var oldStatus = ticket.Status;
-        var (isAllowed, errorCode, message) = TicketStatusTransition.TryTransition(oldStatus, request.NewStatus);
+        var (isAllowed, errorCode, message) = TicketStatusTransition.TryTransition(oldStatus, command.NewStatus);
         if (!isAllowed)
             throw new BusinessException(message, errorCode);
 
@@ -24,16 +24,16 @@ public class UpdateTicketStatusCommandHandler(ITicketingDbContext context) : IRe
             throw new BusinessException(message, errorCode);
         }
 
-        ticket.Status = request.NewStatus;
+        ticket.Status = command.NewStatus;
 
         context.TicketAudits.Add(new TicketAudit
         {
             TicketId = ticket.Id,
-            OperatorId = request.CurrentUserId,
+            OperatorId = command.CurrentUserId,
             Action = TicketAuditAction.StatusChanged,
             OldValue = oldStatus.ToString(),
-            NewValue = request.NewStatus.ToString(),
-            BusinessNote = $"状态变更: {oldStatus} -> {request.NewStatus}",
+            NewValue = command.NewStatus.ToString(),
+            BusinessNote = $"状态变更: {oldStatus} -> {command.NewStatus}",
             CreatedAt = DateTime.UtcNow
         });
 

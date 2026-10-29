@@ -1,8 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-using TicketSystem.Api.Extensions;
 using TicketSystem.Application.Auth.Commands.Register;
 using TicketSystem.Application.Auth.Queries.GetUser;
 using TicketSystem.Application.Auth.Queries.Login;
@@ -35,9 +33,7 @@ public class AuthController(IMediator mediator) : ControllerBase
     [Authorize]
     public async Task<IActionResult> GetProfile()
     {
-        var userId = User.GetUserId();
-
-        var user = await mediator.Send(new GetUserProfileQuery(userId));
+        var user = await mediator.Send(new GetUserProfileQuery());
 
         return Ok(user);
     }

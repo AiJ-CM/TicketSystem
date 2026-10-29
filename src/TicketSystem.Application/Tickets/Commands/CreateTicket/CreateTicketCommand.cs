@@ -7,5 +7,5 @@ public record CreateTicketCommand(
     string Title,
     string Description,
     TicketType TicketType,
-    TicketPriority Priority,
-    int CreatorId) : IRequest<long>;
+    TicketPriority Priority
+) : IRequest<long>;

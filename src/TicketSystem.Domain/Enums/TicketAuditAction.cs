@@ -35,5 +35,15 @@ public enum TicketAuditAction
     /// <summary>
     /// 添加内部/外部评论
     /// </summary>
-    AddedComment
+    AddedComment,
+
+    /// <summary>
+    /// 删除工单
+    /// </summary>
+    Deleted,
+
+    /// <summary>
+    /// 解决工单
+    /// </summary>
+    Resolved
 }

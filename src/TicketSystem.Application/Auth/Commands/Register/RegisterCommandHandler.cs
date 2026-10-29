@@ -11,14 +11,14 @@ public class RegisterCommandHandler(
     ITicketingDbContext db) : IRequestHandler<RegisterCommand, long>
 {
     public async Task<long> Handle(
-        RegisterCommand request, CancellationToken cancellationToken)
+        RegisterCommand request, CancellationToken ct)
     {
-        if (await db.Users.AnyAsync(u => u.UserName == request.Username, cancellationToken))
+        if (await db.Users.AnyAsync(u => u.UserName == request.Username, ct))
         {
             throw new BusinessException("Username already exists.", ErrorCodeEnum.UserCodeDuplicate);
         }
 
-        if (await db.Users.AnyAsync(u => u.Email == request.Email, cancellationToken))
+        if (await db.Users.AnyAsync(u => u.Email == request.Email, ct))
         {
             throw new BusinessException("Email is already registered.", ErrorCodeEnum.EmailDuplicate);
         }
@@ -32,7 +32,7 @@ public class RegisterCommandHandler(
         };
 
         db.Users.Add(user);
-        await db.SaveChangesAsync(cancellationToken);
+        await db.SaveChangesAsync(ct);
 
         return user.Id;
     }

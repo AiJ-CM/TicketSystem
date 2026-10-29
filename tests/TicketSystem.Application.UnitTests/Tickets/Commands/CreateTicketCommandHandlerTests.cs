@@ -14,13 +14,19 @@ namespace TicketSystem.Application.UnitTests.Tickets.Commands;
 public class CreateTicketCommandHandlerTests
 {
     private readonly Mock<ITicketingDbContext> _contextMock;
+    private readonly Mock<ICurrentUser> _currentUserMock;
     private readonly CreateTicketCommandHandler _handler;
 
     public CreateTicketCommandHandlerTests()
     {
         _contextMock = new Mock<ITicketingDbContext>();
         _contextMock.Setup(x => x.Tickets).ReturnsDbSet([]);
-        _handler = new CreateTicketCommandHandler(_contextMock.Object);
+        _currentUserMock = new Mock<ICurrentUser>();
+        _currentUserMock.Setup(x => x.UserId).Returns(1001L);
+        _handler = new CreateTicketCommandHandler(
+            _contextMock.Object,
+            _currentUserMock.Object
+        );
     }
 
     [Fact]
@@ -55,8 +61,7 @@ public class CreateTicketCommandHandlerTests
             title: "支付失败",
             description: "订单支付超时",
             ticketType: TicketType.Bug,
-            priority: TicketPriority.Medium,
-            creatorId: 42);
+            priority: TicketPriority.Medium);
 
         // Act
         await _handler.Handle(command, CancellationToken.None);

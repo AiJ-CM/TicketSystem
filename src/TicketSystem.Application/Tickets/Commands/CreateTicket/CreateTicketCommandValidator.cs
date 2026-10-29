@@ -19,8 +19,5 @@ public class CreateTicketCommandValidator : AbstractValidator<CreateTicketComman
 
         RuleFor(x => x.Priority)
             .IsInEnum().WithMessage("Invalid priority");
-
-        RuleFor(x => x.CreatorId)
-            .GreaterThan(0).WithMessage("Invalid creator ID");
     }
 }

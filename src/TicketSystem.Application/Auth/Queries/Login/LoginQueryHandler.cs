@@ -11,10 +11,10 @@ public class LoginQueryHandler(
     ITokenService tokenService) : IRequestHandler<LoginQuery, LoginResult>
 {
     public async Task<LoginResult> Handle(
-        LoginQuery request, CancellationToken cancellationToken)
+        LoginQuery request, CancellationToken ct)
     {
         var user = await db.Users
-            .FirstOrDefaultAsync(u => u.UserName == request.Username, cancellationToken);
+            .FirstOrDefaultAsync(u => u.UserName == request.Username, ct);
 
         if (user == null || !user.IsActive || !Verify(request.Password, user.PasswordHash))
         {

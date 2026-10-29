@@ -70,15 +70,13 @@ public static class TestDataFactory
         string title = "这是一个正常的标题",
         string description = "这是一段正常的描述内容",
         TicketType ticketType = TicketType.Bug,
-        TicketPriority priority = TicketPriority.High,
-        int creatorId = 1)
+        TicketPriority priority = TicketPriority.High)
     {
         return new CreateTicketCommand(
             Title: title,
             Description: description,
             TicketType: ticketType,
-            Priority: priority,
-            CreatorId: creatorId
+            Priority: priority
         );
     }
 }
