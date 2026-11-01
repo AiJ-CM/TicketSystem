@@ -1,4 +1,5 @@
 using Scalar.AspNetCore;
+using TicketSystem.Api.Extensions;
 using TicketSystem.Api.Extensions.ServiceRegistration;
 
 var builder = WebApplication.CreateBuilder(args);

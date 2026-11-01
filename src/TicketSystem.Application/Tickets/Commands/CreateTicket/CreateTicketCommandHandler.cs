@@ -24,12 +24,6 @@ public class CreateTicketCommandHandler(
 
         context.Tickets.Add(ticket);
 
-        //await auditLogService.LogAsync(
-        //    ticket.Id,
-        //    TicketAuditAction.AddedComment,
-        //    $"创建了工单（操作人ID: {currentId}）"
-        //);
-
         await context.SaveChangesAsync(ct);
 
         return ticket.Id;

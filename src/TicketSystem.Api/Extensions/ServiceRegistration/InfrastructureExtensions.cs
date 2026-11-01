@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using TicketSystem.Application.Common.Interfaces;
+using TicketSystem.Infrastructure.AuditBuilders;
 using TicketSystem.Infrastructure.Configuration;
 using TicketSystem.Infrastructure.Data;
 using TicketSystem.Infrastructure.Services;
@@ -20,19 +21,19 @@ public static class InfrastructureExtensions
         // 2. 注册数据库和拦截器
         services.AddScoped<AuditableEntityInterceptor>();
 
+
+        // 3. 注册自定义数据库接口
         services.AddDbContext<ITicketingDbContext, TicketingDbContext>((sp, options) =>
         {
-            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+            options.UseSqlServer(configuration.GetConnectionString("TicketDb"));
             options.AddInterceptors(sp.GetRequiredService<AuditableEntityInterceptor>());
         });
 
-        // 3. 注册自定义数据库接口
-        services.AddScoped<ITicketingDbContext>(sp =>
-            sp.GetRequiredService<TicketingDbContext>());
-
         // 4. 注册服务
         services.AddScoped<ITokenService, TokenService>();
-        services.AddScoped<IAuditLogService, AuditLogService>();
+        services.AddScoped<IAuditLogBuilder, TicketAuditLogBuilder>();
+        services.AddScoped<IAuditLogBuilder, TicketCommentAuditLogBuilder>();
+        services.AddScoped<IAuditBuilderFactory, AuditBuilderFactory>();
 
         // 5. 注册 Http Context 访问器
         services.AddHttpContextAccessor();

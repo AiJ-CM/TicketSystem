@@ -22,21 +22,19 @@ Content-Type: application/json
 }
 
 ### 用户信息 (GetProfile)
-# @name login
-
 GET {{host}}/api/auth/profile
 Content-Type: application/json
 Authorization: Bearer {{login.response.body.$.token}}
 
 ### 创建工单 (CreateTicket)
-POST {{host}}/api/Tickets
+POST {{host}}/api/Tickets/createTicket
 Content-Type: application/json
 Authorization: Bearer {{login.response.body.$.token}}
 
 {
-  "title": "打印机无法连接",
-  "description": "办公区3号打印机无法连接网络",
-  "ticketType": "IT_SUPPORT",
+  "title": "异常",
+  "description": "异常测试",
+  "ticketType": 1,
   "priority": 1
 }
 

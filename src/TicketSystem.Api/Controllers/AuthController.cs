@@ -12,9 +12,9 @@ namespace TicketSystem.Api.Controllers;
 public class AuthController(IMediator mediator) : ControllerBase
 {
     [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] RegisterCommand request)
+    public async Task<IActionResult> Register([FromBody] RegisterCommand request, CancellationToken cancellationToken)
     {
-        var id = await mediator.Send(request);
+        var id = await mediator.Send(request, cancellationToken);
         return CreatedAtAction(
             actionName: nameof(GetProfile),
             routeValues: null, 
@@ -23,17 +23,17 @@ public class AuthController(IMediator mediator) : ControllerBase
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] LoginQuery request)
+    public async Task<IActionResult> Login([FromBody] LoginQuery request, CancellationToken cancellationToken)
     {
-        var result = await mediator.Send(request);
+        var result = await mediator.Send(request, cancellationToken);
         return Ok(result);
     }
 
     [HttpGet("profile")]
     [Authorize]
-    public async Task<IActionResult> GetProfile()
+    public async Task<IActionResult> GetProfile(CancellationToken cancellationToken)
     {
-        var user = await mediator.Send(new GetUserProfileQuery());
+        var user = await mediator.Send(new GetUserProfileQuery(), cancellationToken);
 
         return Ok(user);
     }

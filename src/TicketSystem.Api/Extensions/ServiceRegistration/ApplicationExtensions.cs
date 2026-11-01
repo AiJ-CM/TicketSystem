@@ -20,7 +20,6 @@ public static class ApplicationExtensions
             cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
         });
 
-
         return services;
     }
 }

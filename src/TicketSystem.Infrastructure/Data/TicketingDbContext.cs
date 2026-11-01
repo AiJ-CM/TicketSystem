@@ -17,6 +17,8 @@ public class TicketingDbContext(DbContextOptions<TicketingDbContext> options) : 
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(TicketingDbContext).Assembly);
-        modelBuilder.Entity<BaseEntity>().HasQueryFilter(u => !u.IsDeleted);
+        modelBuilder.Entity<User>().HasQueryFilter(u => !u.IsDeleted);
+        modelBuilder.Entity<Ticket>().HasQueryFilter(t => !t.IsDeleted);
+        modelBuilder.Entity<TicketComment>().HasQueryFilter(tc => !tc.IsDeleted);
     }
 }

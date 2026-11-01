@@ -22,9 +22,8 @@ public class TicketsController(IMediator mediator) : ControllerBase
 {
     [HttpPost("createTicket")]
     [Authorize]
-    public async Task<ActionResult<long>> CreateTicket([FromBody] CreateTicketCommand command, CancellationToken cancellationToken)
+    public async Task<ActionResult<long>> CreateTicket(CreateTicketCommand command, CancellationToken cancellationToken)
     {
-        // command = command with { CreatorId = User.GetUserId() };
         var id = await mediator.Send(command, cancellationToken);
         return CreatedAtAction(nameof(GetTicket), new { id }, id);
     }

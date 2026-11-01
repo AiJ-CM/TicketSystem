@@ -148,7 +148,7 @@ namespace TicketSystem.Infrastructure.Data.Migrations
 
                     b.HasIndex("TicketId");
 
-                    b.ToTable("TicketAudits");
+                    b.ToTable("TicketAudits", (string)null);
                 });
 
             modelBuilder.Entity("TicketSystem.Domain.Entities.TicketComment", b =>
@@ -201,7 +201,7 @@ namespace TicketSystem.Infrastructure.Data.Migrations
 
                     b.HasIndex("TicketId");
 
-                    b.ToTable("TicketComments");
+                    b.ToTable("TicketComments", (string)null);
                 });
 
             modelBuilder.Entity("TicketSystem.Domain.Entities.User", b =>

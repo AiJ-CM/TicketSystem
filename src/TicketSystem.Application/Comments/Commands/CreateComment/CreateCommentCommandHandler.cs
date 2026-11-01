@@ -3,11 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using TicketSystem.Application.Common.Exceptions;
 using TicketSystem.Application.Common.Interfaces;
 using TicketSystem.Domain.Entities;
-using TicketSystem.Domain.Enums;
 
 namespace TicketSystem.Application.Comments.Commands.CreateComment;
 
-public class CreateCommentCommandHandler(ITicketingDbContext context, ICurrentUser currentUser, IAuditLogService auditLogService) : IRequestHandler<CreateCommentCommand, long>
+public class CreateCommentCommandHandler(ITicketingDbContext context, ICurrentUser currentUser) : IRequestHandler<CreateCommentCommand, long>
 {
     public async Task<long> Handle(CreateCommentCommand command, CancellationToken ct)
     {
@@ -25,12 +24,6 @@ public class CreateCommentCommandHandler(ITicketingDbContext context, ICurrentUs
         };
 
         context.TicketComments.Add(comment);
-
-        await auditLogService.LogAsync(
-            command.TicketId,
-            TicketAuditAction.AddedComment,
-            $"添加了评论 (内部: {command.IsInternal})"
-        );
 
         await context.SaveChangesAsync(ct);
 
