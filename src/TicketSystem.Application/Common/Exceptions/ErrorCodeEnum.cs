@@ -18,5 +18,6 @@ public enum ErrorCodeEnum
     TicketNotFound,
     InvalidTicketState,
     StatusNotChanged,
-    InvalidStatusTransition
+    InvalidStatusTransition,
+    TicketAlreadyAssigned
 }

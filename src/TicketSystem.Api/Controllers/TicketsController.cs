@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TicketSystem.Api.Extensions;
+using TicketSystem.Application.Audit.Dtos;
 using TicketSystem.Application.Audit.Queries.GetTicketAudits;
 using TicketSystem.Application.Common.Models;
 using TicketSystem.Application.Tickets.Commands.AssignTicket;
@@ -18,10 +19,10 @@ namespace TicketSystem.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class TicketsController(IMediator mediator) : ControllerBase
 {
     [HttpPost("createTicket")]
-    [Authorize]
     public async Task<ActionResult<long>> CreateTicket(CreateTicketCommand command, CancellationToken cancellationToken)
     {
         var id = await mediator.Send(command, cancellationToken);
@@ -29,7 +30,6 @@ public class TicketsController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet("{id}")]
-    [Authorize]
     public async Task<ActionResult<TicketDto>> GetTicket(long id, CancellationToken cancellationToken)
     {
         var query = new GetTicketQuery(id);
@@ -38,38 +38,29 @@ public class TicketsController(IMediator mediator) : ControllerBase
     }
 
     [HttpPost("assign")]
-    [Authorize]
     public async Task<IActionResult> Assign(AssignTicketCommand command, CancellationToken cancellationToken)
     {
-        // command = command with { CurrentUserId = User.GetUserId() };
         await mediator.Send(command, cancellationToken);
         return Ok();
     }
 
     [HttpPost("updateStatus")]
-    [Authorize]
     public async Task<IActionResult> UpdateStatus(UpdateTicketStatusCommand command, CancellationToken cancellationToken)
     {
-        // command = command with { CurrentUserId = User.GetUserId() };
         await mediator.Send(command, cancellationToken);
         return Ok();
     }
 
-    [HttpGet("list")]
-    [Authorize]
-    public async Task<ActionResult<PagedList<TicketDto>>> GetTickets(
-    [FromQuery] GetTicketListQuery query,
-    CancellationToken cancellationToken)
+    [HttpPost("list")]
+    public async Task<ActionResult<PagedList<TicketDto>>> GetTickets(GetTicketListQuery query, CancellationToken cancellationToken)
     {
         var result = await mediator.Send(query, cancellationToken);
         return Ok(result);
     }
 
     [HttpPost("submitResolution")]
-    [Authorize]
     public async Task<IActionResult> SubmitResolution(SubmitResolutionCommand command, CancellationToken cancellationToken)
     {
-        command = command with { OperatorId = User.GetUserId() };
         await mediator.Send(command, cancellationToken);
         return NoContent();
     }
@@ -77,7 +68,6 @@ public class TicketsController(IMediator mediator) : ControllerBase
     [HttpPost("close")]
     public async Task<IActionResult> Close(CloseTicketCommand command, CancellationToken cancellationToken)
     {
-        command = command with { OperatorId = User.GetUserId() };
         await mediator.Send(command, cancellationToken);
         return NoContent();
     }
@@ -85,15 +75,14 @@ public class TicketsController(IMediator mediator) : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(long id, CancellationToken cancellationToken)
     {
-        var command = new DeleteTicketCommand(TicketId: id, OperatorId: User.GetUserId());
-        await mediator.Send(command, cancellationToken);
+        await mediator.Send(new DeleteTicketCommand(id), cancellationToken);
         return NoContent();
     }
 
-    [HttpGet("audits")]
-    public async Task<IActionResult> GetAudits(GetTicketAuditsQuery query, CancellationToken cancellationToken)
+    [HttpGet("audits/{id}")]
+    public async Task<ActionResult<IEnumerable<AuditDto>>> GetAudits(long id, CancellationToken cancellationToken)
     {
-        var audits = await mediator.Send(query, cancellationToken);
+        var audits = await mediator.Send(new GetTicketAuditsQuery(id), cancellationToken);
         return Ok(audits);
     }
 }

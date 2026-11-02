@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
 using TicketSystem.Application.Common.Exceptions;
 using TicketSystem.Application.Common.Interfaces;
 using TicketSystem.Application.Common.StateMachine;
@@ -11,7 +12,7 @@ public class UpdateTicketStatusCommandHandler(ITicketingDbContext context) : IRe
 {
     public async Task Handle(UpdateTicketStatusCommand command, CancellationToken cancellationToken)
     {
-        var ticket = await context.Tickets.FindAsync([command.TicketId], cancellationToken)
+        var ticket = await context.Tickets.FirstOrDefaultAsync(t => t.Id == command.TicketId, cancellationToken)
             ?? throw new BusinessException("工单不存在", ErrorCodeEnum.TicketNotFound);
 
         var oldStatus = ticket.Status;
@@ -19,23 +20,7 @@ public class UpdateTicketStatusCommandHandler(ITicketingDbContext context) : IRe
         if (!isAllowed)
             throw new BusinessException(message, errorCode);
 
-        if (!isAllowed)
-        {
-            throw new BusinessException(message, errorCode);
-        }
-
         ticket.Status = command.NewStatus;
-
-        context.TicketAudits.Add(new TicketAudit
-        {
-            TicketId = ticket.Id,
-            OperatorId = command.CurrentUserId,
-            Action = TicketAuditAction.StatusChanged,
-            OldValue = oldStatus.ToString(),
-            NewValue = command.NewStatus.ToString(),
-            BusinessNote = $"状态变更: {oldStatus} -> {command.NewStatus}",
-            CreatedAt = DateTime.UtcNow
-        });
 
         await context.SaveChangesAsync(cancellationToken);
     }

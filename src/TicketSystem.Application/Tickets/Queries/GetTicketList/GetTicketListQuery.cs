@@ -19,18 +19,17 @@ public class GetTicketListQuery : IRequest<PagedList<TicketDto>>
     public int PageSize { get; set; } = 20;
 
     /// <summary>
-    /// 状态筛选（可选，传入 0=待处理, 1=处理中, 2=已完成, 3=已关闭）
+    /// 状态筛选
     /// </summary>
-    [JsonConverter(typeof(JsonStringEnumConverter))]
     public TicketStatus? Status { get; set; }
 
     /// <summary>
     /// 分配给谁（按用户ID筛选）
     /// </summary>
-    public int? AssignedTo { get; set; }
+    public long? AssignedTo { get; set; }
 
     /// <summary>
     /// 创建人（按用户ID筛选）
     /// </summary>
-    public int? CreatedBy { get; set; }
+    public long? CreatedBy { get; set; }
 }

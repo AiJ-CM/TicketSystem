@@ -26,7 +26,8 @@ public class TicketCommentAuditLogBuilder : IAuditLogBuilder
         {
             case EntityState.Added:
                 audit.Action = TicketAuditAction.AddedComment;
-                audit.BusinessNote = $"添加了评论 (内部: {comment.IsInternal})";
+                var internalStr = comment.IsInternal? "内部" : string.Empty;
+                audit.BusinessNote = $"添加了{internalStr}评论";
                 break;
 
             default:
@@ -38,11 +39,8 @@ public class TicketCommentAuditLogBuilder : IAuditLogBuilder
 
     public void AttachAudit(TicketAudit audit, EntityEntry entry)
     {
-        // 优先走外键，彻底避免导航属性为 null 的问题
         if (entry.Entity is TicketComment comment)
         {
-            audit.TicketId = comment.TicketId;
-            // 如果导航加载了，也挂进去双重保险
             comment.Ticket?.Audits.Add(audit);
         }
     }

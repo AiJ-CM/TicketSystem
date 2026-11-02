@@ -10,11 +10,9 @@ public class CreateCommentCommandHandler(ITicketingDbContext context, ICurrentUs
 {
     public async Task<long> Handle(CreateCommentCommand command, CancellationToken ct)
     {
-        // 1. 校验工单是否存在（排除已软删除的）
         var ticket = await context.Tickets.FirstOrDefaultAsync(t => t.Id == command.TicketId, ct)
             ?? throw new BusinessException("工单不存在", ErrorCodeEnum.TicketNotFound);
 
-        // 2. 创建评论实体
         var comment = new TicketComment
         {
             TicketId = command.TicketId,

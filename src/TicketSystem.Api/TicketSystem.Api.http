@@ -1,4 +1,6 @@
 @host = http://localhost:5218
+@CommentId = 1
+@TicketId = 1
 
 ### 用户注册 (Register)
 POST {{host}}/api/auth/register
@@ -26,19 +28,97 @@ GET {{host}}/api/auth/profile
 Content-Type: application/json
 Authorization: Bearer {{login.response.body.$.token}}
 
+### 创建评论 (CreateComments)
+POST {{host}}/api/TicketComments
+Content-Type: application/json
+Authorization: Bearer {{login.response.body.$.token}}
+
+{
+  "ticketId": {{TicketId}},
+  "content": "测试评论",
+  "isInternal": true
+}
+
+### 获取工单评论 (GetTicketComments)
+GET {{host}}/api/TicketComments/{{TicketId}}
+Accept: application/json
+Authorization: Bearer {{login.response.body.$.token}}
+
 ### 创建工单 (CreateTicket)
 POST {{host}}/api/Tickets/createTicket
 Content-Type: application/json
 Authorization: Bearer {{login.response.body.$.token}}
 
 {
-  "title": "异常",
-  "description": "异常测试",
+  "title": "异常2",
+  "description": "异常测试2",
   "ticketType": 1,
   "priority": 1
 }
 
 ### 获取单个工单 (GetTicket)
-GET {{host}}/api/Tickets/1
+GET {{host}}/api/Tickets/{{TicketId}}
 Accept: application/json
+Authorization: Bearer {{login.response.body.$.token}}
+
+### 删除工单 (DeleteTicket)
+DELETE {{host}}/api/Tickets/{{TicketId}}
+Accept: application/json
+Authorization: Bearer {{login.response.body.$.token}}
+
+### 分配工单 (AssignTicket)
+POST {{host}}/api/Tickets/assign
+Content-Type: application/json
+Authorization: Bearer {{login.response.body.$.token}}
+
+{
+  "ticketId": {{TicketId}},
+  "assigneeId": 2
+}
+
+### 更新工单状态 (UpdateTicketStatus)
+POST {{host}}/api/Tickets/updateStatus
+Content-Type: application/json
+Authorization: Bearer {{login.response.body.$.token}}
+
+{
+  "ticketId": {{TicketId}},
+  "newStatus": 2
+}
+
+### 分页查询工单列表 (GetTickets)
+POST {{host}}/api/Tickets/list
+Content-Type: application/json
+Authorization: Bearer {{login.response.body.$.token}}
+
+{
+  "pageIndex": 1,
+  "pageSize": 10,
+  "status": null,
+  "assignedTo": null,
+  "createdBy": null
+}
+
+### 提交解决方案 (submitResolution)
+POST {{host}}/api/Tickets/submitResolution
+Content-Type: application/json
+Authorization: Bearer {{login.response.body.$.token}}
+
+{
+  "ticketId": {{TicketId}},
+  "resolutionNote": "测试解决方案内容"
+}
+
+### 关闭工单 (closeTicket) 
+POST {{host}}/api/Tickets/close
+Content-Type: application/json
+Authorization: Bearer {{login.response.body.$.token}}
+
+{
+  "ticketId": {{TicketId}}
+}
+
+### 获取工单审计日志 (GetTicketAuditLogs)
+GET {{host}}/api/Tickets/audits/{{TicketId}}
+Content-Type: application/json
 Authorization: Bearer {{login.response.body.$.token}}

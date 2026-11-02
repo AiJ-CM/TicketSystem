@@ -12,7 +12,7 @@ namespace TicketSystem.Api.Controllers;
 public class AuthController(IMediator mediator) : ControllerBase
 {
     [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] RegisterCommand request, CancellationToken cancellationToken)
+    public async Task<IActionResult> Register(RegisterCommand request, CancellationToken cancellationToken)
     {
         var id = await mediator.Send(request, cancellationToken);
         return CreatedAtAction(
@@ -23,7 +23,7 @@ public class AuthController(IMediator mediator) : ControllerBase
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] LoginQuery request, CancellationToken cancellationToken)
+    public async Task<IActionResult> Login(LoginQuery request, CancellationToken cancellationToken)
     {
         var result = await mediator.Send(request, cancellationToken);
         return Ok(result);

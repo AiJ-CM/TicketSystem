@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Azure.Core;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using TicketSystem.Application.Common.Interfaces;
 using TicketSystem.Domain.Entities;
@@ -39,10 +40,23 @@ public class TicketAuditLogBuilder : IAuditLogBuilder
                     audit.NewValue = newStatus.ToString();
                     audit.BusinessNote = $"工单《{ticket.Title}》状态由 {oldStatus} 变更为 {newStatus}";
                 }
-                else
+                else if (entry.Property("AssigneeId").IsModified)
+                {
+                    var oldAssigneeId = entry.Property("AssigneeId").OriginalValue as long?;
+                    var newAssigneeId = ticket.AssigneeId;
+
+                    audit.Action = TicketAuditAction.Assigned;
+                    audit.OldValue = oldAssigneeId?.ToString();
+                    audit.NewValue = newAssigneeId.ToString();
+                    audit.BusinessNote = oldAssigneeId.HasValue
+                        ? $"将工单从 '用户ID：{oldAssigneeId}' 重新指派给了 '用户ID：{newAssigneeId}'"
+                        : $"将工单指派给了 '用户ID：{newAssigneeId}'";
+                }
+                else 
                 {
                     return null!;
                 }
+
                 break;
 
             default:

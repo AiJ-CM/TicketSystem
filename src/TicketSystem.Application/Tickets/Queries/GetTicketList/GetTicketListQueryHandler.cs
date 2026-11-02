@@ -7,13 +7,13 @@ using TicketSystem.Application.Tickets.Mappers;
 
 namespace TicketSystem.Application.Tickets.Queries.GetTicketList;
 
-public class GetTicketListQueryHandler(
-    ITicketingDbContext context) : IRequestHandler<GetTicketListQuery, PagedList<TicketDto>>
+public class GetTicketListQueryHandler(ITicketingDbContext context)
+    : IRequestHandler<GetTicketListQuery, PagedList<TicketDto>>
 {
     public async Task<PagedList<TicketDto>> Handle(GetTicketListQuery request, CancellationToken cancellationToken)
     {
         var query = context.Tickets
-            .Include(t => t.CreatedBy)
+            .Include(t => t.Creator)
             .Include(t => t.Assignee)
             .AsNoTracking();
 

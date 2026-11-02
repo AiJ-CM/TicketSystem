@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using TicketSystem.Application.Common.Behaviors;
-using TicketSystem.Application.Tickets.Commands.CreateTicket;
 
 namespace TicketSystem.Api.Extensions.ServiceRegistration;
 
@@ -16,7 +15,7 @@ public static class ApplicationExtensions
         services.AddMediatR(cfg =>
         {
             cfg.RegisterServicesFromAssembly(
-                typeof(CreateTicketCommandHandler).Assembly);
+                typeof(ValidationBehavior<,>).Assembly);
             cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
         });
 
