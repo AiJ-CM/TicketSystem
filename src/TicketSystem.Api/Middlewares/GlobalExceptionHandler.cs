@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Diagnostics;
 using System.Text.Json;
 using TicketSystem.Application.Common.Exceptions;
+using TicketSystem.Application.Common.Models;
 
 namespace TicketSystem.Api.Middlewares;
 
@@ -18,8 +19,7 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IE
         Exception exception,
         CancellationToken cancellationToken)
     {
-        var requestId = httpContext.TraceIdentifier
-            ?? Guid.NewGuid().ToString("N")[..8];
+        var requestId = httpContext.TraceIdentifier ?? Guid.NewGuid().ToString("N")[..8];
 
         logger.LogError(
             exception,
@@ -35,43 +35,31 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IE
 
         httpContext.Response.ContentType = "application/json";
 
-        var (statusCode, errorCode, userMessage, details) = exception switch
+        var (statusCode, errorCode, userMessage) = exception switch
         {
             BusinessException bizEx => (
                 StatusCodes.Status400BadRequest,
                 bizEx.ErrorCode ?? "BusinessError",
-                bizEx.Message,
-                bizEx.InnerException?.Message
+                bizEx.Message
             ),
             ValidationException valEx => (
                 StatusCodes.Status400BadRequest,
                 "ValidationError",
-                "请求参数校验失败",
                 string.Join("; ", valEx.Errors.Select(e => e.ErrorMessage))
             ),
             _ => (
                 StatusCodes.Status500InternalServerError,
                 "InternalServerError",
-                "服务器内部错误，请稍后重试",
-                null
+                "服务器内部错误，请稍后重试"
             )
         };
 
         httpContext.Response.StatusCode = statusCode;
 
-        var errorResponse = new
-        {
-            success = false,
-            code = statusCode,
-            requestId,
-            errorCode,
-            message = userMessage,
-            details,
-            timestamp = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss")
-        };
+        var response = ApiResult<object>.Fail(statusCode, userMessage, requestId);
 
         await httpContext.Response.WriteAsync(
-          JsonSerializer.Serialize(errorResponse, JsonOptions), cancellationToken);
+            JsonSerializer.Serialize(response, JsonOptions), cancellationToken);
 
         return true;
     }
