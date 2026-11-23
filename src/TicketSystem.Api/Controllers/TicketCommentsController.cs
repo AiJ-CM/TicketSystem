@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TicketSystem.Api.Authorization;
 using TicketSystem.Application.Comments.Commands.CreateComment;
 using TicketSystem.Application.Comments.Queries.GetComments;
 
@@ -12,6 +13,7 @@ namespace TicketSystem.Api.Controllers;
 public class TicketCommentsController(IMediator mediator) : ControllerBase
 {
     [HttpPost]
+    [RequirePermission("comment:create")]
     public async Task<IActionResult> CreateComment(CreateCommentCommand command, CancellationToken cancellationToken)
     {
         var id = await mediator.Send(command, cancellationToken);
@@ -19,6 +21,7 @@ public class TicketCommentsController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet("{ticketId}")]
+    [RequirePermission("comment:read")]
     public async Task<IActionResult> GetComments(long ticketId, CancellationToken cancellationToken)
     {
         var comments = await mediator.Send(new GetCommentsByTicketIdQuery(ticketId), cancellationToken);

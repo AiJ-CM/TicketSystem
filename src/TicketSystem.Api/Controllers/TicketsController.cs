@@ -31,6 +31,7 @@ public class TicketsController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet("{id}")]
+    [RequirePermission("ticket:read")]
     public async Task<ActionResult<TicketDto>> GetTicket(long id, CancellationToken cancellationToken)
     {
         var query = new GetTicketQuery(id);
@@ -39,6 +40,7 @@ public class TicketsController(IMediator mediator) : ControllerBase
     }
 
     [HttpPost("assign")]
+    [RequirePermission("ticket:assign")]
     public async Task<IActionResult> Assign(AssignTicketCommand command, CancellationToken cancellationToken)
     {
         await mediator.Send(command, cancellationToken);
@@ -46,6 +48,7 @@ public class TicketsController(IMediator mediator) : ControllerBase
     }
 
     [HttpPost("updateStatus")]
+    [RequirePermission("ticket:update")]
     public async Task<IActionResult> UpdateStatus(UpdateTicketStatusCommand command, CancellationToken cancellationToken)
     {
         await mediator.Send(command, cancellationToken);
@@ -53,6 +56,7 @@ public class TicketsController(IMediator mediator) : ControllerBase
     }
 
     [HttpPost("list")]
+    [RequirePermission("ticket:read")]
     public async Task<ActionResult<PagedList<TicketDto>>> GetTickets(GetTicketListQuery query, CancellationToken cancellationToken)
     {
         var result = await mediator.Send(query, cancellationToken);
@@ -60,6 +64,7 @@ public class TicketsController(IMediator mediator) : ControllerBase
     }
 
     [HttpPost("submitResolution")]
+    [RequirePermission("ticket:update")]
     public async Task<IActionResult> SubmitResolution(SubmitResolutionCommand command, CancellationToken cancellationToken)
     {
         await mediator.Send(command, cancellationToken);
@@ -67,6 +72,7 @@ public class TicketsController(IMediator mediator) : ControllerBase
     }
 
     [HttpPost("close")]
+    [RequirePermission("ticket:update")]
     public async Task<IActionResult> Close(CloseTicketCommand command, CancellationToken cancellationToken)
     {
         await mediator.Send(command, cancellationToken);
@@ -82,6 +88,7 @@ public class TicketsController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet("audits/{id}")]
+    [RequirePermission("ticket:audit")]
     public async Task<ActionResult<IEnumerable<AuditDto>>> GetAudits(long id, CancellationToken cancellationToken)
     {
         var audits = await mediator.Send(new GetTicketAuditsQuery(id), cancellationToken);
