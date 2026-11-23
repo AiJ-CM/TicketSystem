@@ -1,6 +1,6 @@
-using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Caching.Distributed;
+using System.Text.Json;
 using TicketSystem.Application.Common.Interfaces;
 
 namespace TicketSystem.Api.Authorization;
