@@ -1,5 +1,4 @@
-﻿using Azure.Core;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using TicketSystem.Application.Common.Interfaces;
 using TicketSystem.Domain.Entities;
@@ -52,7 +51,7 @@ public class TicketAuditLogBuilder : IAuditLogBuilder
                         ? $"将工单从 '用户ID：{oldAssigneeId}' 重新指派给了 '用户ID：{newAssigneeId}'"
                         : $"将工单指派给了 '用户ID：{newAssigneeId}'";
                 }
-                else 
+                else
                 {
                     return null!;
                 }

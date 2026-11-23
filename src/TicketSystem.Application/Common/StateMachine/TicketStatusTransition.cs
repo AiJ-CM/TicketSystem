@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using TicketSystem.Application.Common.Exceptions;
+﻿using TicketSystem.Application.Common.Exceptions;
 using TicketSystem.Domain.Enums;
 
 namespace TicketSystem.Application.Common.StateMachine;
@@ -17,13 +14,13 @@ public static class TicketStatusTransition
             TicketStatus.Closed,
             TicketStatus.PendingUser
         ],
-        [TicketStatus.InProgress] = 
+        [TicketStatus.InProgress] =
         [
             TicketStatus.Resolved,
             TicketStatus.PendingUser,
             TicketStatus.Closed
         ],
-        [TicketStatus.PendingUser] = 
+        [TicketStatus.PendingUser] =
         [
             TicketStatus.InProgress,
             TicketStatus.Closed
@@ -33,7 +30,7 @@ public static class TicketStatusTransition
             TicketStatus.Reopened,
             TicketStatus.Closed
         ],
-        [TicketStatus.Reopened] = 
+        [TicketStatus.Reopened] =
         [
             TicketStatus.InProgress,
             TicketStatus.Resolved

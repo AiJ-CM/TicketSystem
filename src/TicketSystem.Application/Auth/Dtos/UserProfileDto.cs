@@ -1,4 +1,5 @@
 ﻿namespace TicketSystem.Application.Auth.Dtos;
+
 public class UserProfileDto
 {
     public long Id { get; set; }

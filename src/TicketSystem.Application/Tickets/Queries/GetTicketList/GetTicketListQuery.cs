@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using System.Text.Json.Serialization;
 using TicketSystem.Application.Common.Models;
 using TicketSystem.Application.Tickets.Dtos;
 using TicketSystem.Domain.Enums;

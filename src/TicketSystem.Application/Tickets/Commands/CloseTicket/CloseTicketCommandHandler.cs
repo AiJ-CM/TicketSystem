@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using TicketSystem.Application.Common.Exceptions;
 using TicketSystem.Application.Common.Interfaces;
 using TicketSystem.Application.Common.StateMachine;
-using TicketSystem.Domain.Entities;
 using TicketSystem.Domain.Enums;
 
 namespace TicketSystem.Application.Tickets.Commands.CloseTicket;

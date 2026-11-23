@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TicketSystem.Application.Common.Interfaces;
 using TicketSystem.Domain.Entities;
-using TicketSystem.Domain.Entities.Common;
 
 namespace TicketSystem.Infrastructure.Data;
 

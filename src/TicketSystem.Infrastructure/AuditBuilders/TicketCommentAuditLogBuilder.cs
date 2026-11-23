@@ -26,7 +26,7 @@ public class TicketCommentAuditLogBuilder : IAuditLogBuilder
         {
             case EntityState.Added:
                 audit.Action = TicketAuditAction.AddedComment;
-                var internalStr = comment.IsInternal? "内部" : string.Empty;
+                var internalStr = comment.IsInternal ? "内部" : string.Empty;
                 audit.BusinessNote = $"添加了{internalStr}评论";
                 break;
 

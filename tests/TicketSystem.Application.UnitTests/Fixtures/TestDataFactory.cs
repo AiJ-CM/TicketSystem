@@ -1,6 +1,6 @@
-﻿using TicketSystem.Domain.Entities;
+﻿using TicketSystem.Application.Tickets.Commands.CreateTicket;
+using TicketSystem.Domain.Entities;
 using TicketSystem.Domain.Enums;
-using TicketSystem.Application.Tickets.Commands.CreateTicket;
 
 namespace TicketSystem.Application.UnitTests.Fixtures;
 

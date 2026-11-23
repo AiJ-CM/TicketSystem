@@ -17,7 +17,7 @@ public class AuthController(IMediator mediator) : ControllerBase
         var id = await mediator.Send(request, cancellationToken);
         return CreatedAtAction(
             actionName: nameof(GetProfile),
-            routeValues: null, 
+            routeValues: null,
             value: new { Id = id }
         );
     }

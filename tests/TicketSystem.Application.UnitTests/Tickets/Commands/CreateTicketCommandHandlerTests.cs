@@ -2,7 +2,6 @@
 using FluentAssertions;
 using Moq;
 using Moq.EntityFrameworkCore;
-using System.Linq.Expressions;
 using TicketSystem.Application.Common.Interfaces;
 using TicketSystem.Application.Tickets.Commands.CreateTicket;
 using TicketSystem.Application.UnitTests.Fixtures;
@@ -37,8 +36,8 @@ public class CreateTicketCommandHandlerTests
         int nextId = 1;
         Ticket addedTicket = null!;
         _contextMock.Setup(x => x.Tickets.Add(It.IsAny<Ticket>()))
-                    .Callback<Ticket>(ticket => 
-                    { 
+                    .Callback<Ticket>(ticket =>
+                    {
                         addedTicket = ticket;
                         addedTicket.Id = nextId++;
                     });

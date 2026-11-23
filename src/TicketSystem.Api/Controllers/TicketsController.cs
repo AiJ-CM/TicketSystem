@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TicketSystem.Api.Extensions;
 using TicketSystem.Application.Audit.Dtos;
 using TicketSystem.Application.Audit.Queries.GetTicketAudits;
 using TicketSystem.Application.Common.Models;

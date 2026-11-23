@@ -9,7 +9,7 @@ namespace TicketSystem.Application.Comments.Mappers;
 public static partial class CommentMapper
 {
     [MapProperty(
-        nameof(TicketComment.Commenter), 
+        nameof(TicketComment.Commenter),
         nameof(CommentDto.CommenterName),
         Use = nameof(@UserMapper.GetName))]
     public static partial CommentDto ToDto(TicketComment comment);
