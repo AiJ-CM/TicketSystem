@@ -27,5 +27,23 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.Property(u => u.CreatedAt)
                .HasDefaultValueSql("getutcdate()"); // 设置默认值为当前 UTC 时间
+
+        builder.HasMany(u => u.Roles)
+               .WithMany(role => role.Users)
+               .UsingEntity<Dictionary<string, object>>(
+                   "UserRoles",
+                   right => right.HasOne<Role>()
+                       .WithMany()
+                       .HasForeignKey("RoleId")
+                       .HasConstraintName("FK_UserRoles_Roles_RoleId"),
+                   left => left.HasOne<User>()
+                       .WithMany()
+                       .HasForeignKey("UserId")
+                       .HasConstraintName("FK_UserRoles_Users_UserId"),
+                   join =>
+                   {
+                       join.ToTable("UserRoles");
+                       join.HasKey("UserId", "RoleId");
+                   });
     }
 }

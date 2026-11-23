@@ -16,4 +16,5 @@ public class User : AuditEntity
     public ICollection<Ticket> AssignedTickets { get; set; } = [];
     public ICollection<TicketAudit> Audits { get; set; } = [];
     public ICollection<TicketComment> Comments { get; set; } = [];
+    public ICollection<Role> Roles { get; set; } = [];
 }
