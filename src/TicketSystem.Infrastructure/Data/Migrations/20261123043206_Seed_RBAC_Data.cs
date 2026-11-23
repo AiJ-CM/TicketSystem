@@ -13,28 +13,28 @@ public partial class Seed_RBAC_Data : Migration
         // 1. 插入角色数据
         migrationBuilder.InsertData(
             table: "Roles",
-            columns: ["Id", "RoleName", "Description"],
+            columns: ["Id", "RoleName", "Description", "IsDeleted"],
             values: new object[,]
             {
-            { 1, "Admin", "超级管理员，拥有系统最高权限" },
-            { 2, "Agent", "工单处理人/客服，负责处理和流转工单" },
-            { 3, "User", "普通用户，仅能提交和查看自己的工单" }
+            { 1, "Admin", "超级管理员，拥有系统最高权限", false },
+            { 2, "Agent", "工单处理人/客服，负责处理和流转工单", false },
+            { 3, "User", "普通用户，仅能提交和查看自己的工单", false }
             });
 
         // 2. 插入权限数据
         migrationBuilder.InsertData(
             table: "Permissions",
-            columns: ["Id", "PermissionCode", "ModuleName", "Description"],
+            columns: ["Id", "PermissionCode", "ModuleName", "Description", "IsDeleted"],
             values: new object[,]
             {
-            { 1, "ticket:create", "Ticket", "创建工单" },
-            { 2, "ticket:read", "Ticket", "查看工单详情及列表" },
-            { 3, "ticket:update", "Ticket", "更新工单状态及提交解决方案" },
-            { 4, "ticket:assign", "Ticket", "指派工单给处理人" },
-            { 5, "ticket:delete", "Ticket", "删除工单（高危操作）" },
-            { 6, "ticket:audit", "Ticket", "查看工单审计记录" },
-            { 7, "comment:create", "Comment", "创建工单评论" },
-            { 8, "comment:read", "Comment", "查看工单评论" }
+            { 1, "ticket:create", "Ticket", "创建工单", false },
+            { 2, "ticket:read", "Ticket", "查看工单详情及列表", false },
+            { 3, "ticket:update", "Ticket", "更新工单状态及提交解决方案", false },
+            { 4, "ticket:assign", "Ticket", "指派工单给处理人", false },
+            { 5, "ticket:delete", "Ticket", "删除工单（高危操作）", false },
+            { 6, "ticket:audit", "Ticket", "查看工单审计记录", false },
+            { 7, "comment:create", "Comment", "创建工单评论", false },
+            { 8, "comment:read", "Comment", "查看工单评论", false }
             });
 
         // 3. 插入角色权限关联数据 (隐式中间表)
