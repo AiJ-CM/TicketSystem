@@ -9,6 +9,8 @@ public interface ITicketingDbContext
     DbSet<Ticket> Tickets { get; }
     DbSet<TicketComment> TicketComments { get; }
     DbSet<TicketAudit> TicketAudits { get; }
+    DbSet<Role> Roles { get; }
+    DbSet<Permission> Permissions { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

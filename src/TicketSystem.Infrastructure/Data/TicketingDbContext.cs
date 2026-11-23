@@ -11,6 +11,8 @@ public class TicketingDbContext(DbContextOptions<TicketingDbContext> options) : 
     public DbSet<Ticket> Tickets => Set<Ticket>();
     public DbSet<TicketComment> TicketComments => Set<TicketComment>();
     public DbSet<TicketAudit> TicketAudits => Set<TicketAudit>();
+    public DbSet<Role> Roles => Set<Role>();
+    public DbSet<Permission> Permissions => Set<Permission>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
