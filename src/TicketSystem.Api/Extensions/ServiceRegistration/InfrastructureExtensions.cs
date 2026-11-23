@@ -31,6 +31,7 @@ public static class InfrastructureExtensions
 
         // 4. 注册服务
         services.AddScoped<ITokenService, TokenService>();
+        services.AddScoped<IUserPermissionProvider, DbUserPermissionProvider>();
         services.AddScoped<IAuditLogBuilder, TicketAuditLogBuilder>();
         services.AddScoped<IAuditLogBuilder, TicketCommentAuditLogBuilder>();
         services.AddScoped<IAuditBuilderFactory, AuditBuilderFactory>();

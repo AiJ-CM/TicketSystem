@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TicketSystem.Api.Authorization;
 using TicketSystem.Application.Audit.Dtos;
 using TicketSystem.Application.Audit.Queries.GetTicketAudits;
 using TicketSystem.Application.Common.Models;
@@ -22,6 +23,7 @@ namespace TicketSystem.Api.Controllers;
 public class TicketsController(IMediator mediator) : ControllerBase
 {
     [HttpPost("createTicket")]
+    [RequirePermission("ticket:create")]
     public async Task<ActionResult<long>> CreateTicket(CreateTicketCommand command, CancellationToken cancellationToken)
     {
         var id = await mediator.Send(command, cancellationToken);
@@ -72,6 +74,7 @@ public class TicketsController(IMediator mediator) : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [RequirePermission("ticket:delete")]
     public async Task<IActionResult> Delete(long id, CancellationToken cancellationToken)
     {
         await mediator.Send(new DeleteTicketCommand(id), cancellationToken);

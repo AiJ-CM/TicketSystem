@@ -18,11 +18,11 @@ public class TokenService(JwtSettings settings) : ITokenService
         var expires = DateTime.UtcNow
             .AddMinutes(settings.ExpiresMinutes);
 
+        // JWT 只保留身份所需的基础信息；权限由服务端从 Redis/数据库动态校验。
         var claims = new[]
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Name, user.UserName),
-            new Claim(ClaimTypes.Role, user.Role.ToString())
+            new Claim(ClaimTypes.Name, user.UserName)
         };
 
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
