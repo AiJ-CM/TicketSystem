@@ -1,10 +1,8 @@
-﻿
-using FluentAssertions;
+﻿using FluentAssertions;
 using Moq;
 using Moq.EntityFrameworkCore;
 using TicketSystem.Application.Common.Interfaces;
 using TicketSystem.Application.Tickets.Commands.CreateTicket;
-using TicketSystem.Application.UnitTests.Fixtures;
 using TicketSystem.Domain.Entities;
 using TicketSystem.Domain.Enums;
 
@@ -12,65 +10,76 @@ namespace TicketSystem.Application.UnitTests.Tickets.Commands;
 
 public class CreateTicketCommandHandlerTests
 {
-    private readonly Mock<ITicketingDbContext> _contextMock;
-    private readonly Mock<ICurrentUser> _currentUserMock;
-    private readonly CreateTicketCommandHandler _handler;
-
-    public CreateTicketCommandHandlerTests()
-    {
-        _contextMock = new Mock<ITicketingDbContext>();
-        _contextMock.Setup(x => x.Tickets).ReturnsDbSet([]);
-        _currentUserMock = new Mock<ICurrentUser>();
-        _currentUserMock.Setup(x => x.UserId).Returns(1001L);
-        _handler = new CreateTicketCommandHandler(
-            _contextMock.Object,
-            _currentUserMock.Object
-        );
-    }
-
     [Fact]
-    public async Task Handle_Should_Add_Ticket_And_Return_Id()
+    public async Task Handle_Should_Create_Ticket_With_Current_User_And_Return_Id()
     {
-        var command = TestDataFactory.CreateCommand();
+        // Arrange
+        const long currentUserId = 1001L;
+        const long generatedTicketId = 27L;
+        var database = new Mock<ITicketingDbContext>();
+        var currentUser = new Mock<ICurrentUser>();
+        currentUser.Setup(user => user.UserId).Returns(currentUserId);
+        database.Setup(context => context.Tickets).ReturnsDbSet([]);
 
-        int nextId = 1;
-        Ticket addedTicket = null!;
-        _contextMock.Setup(x => x.Tickets.Add(It.IsAny<Ticket>()))
-                    .Callback<Ticket>(ticket =>
-                    {
-                        addedTicket = ticket;
-                        addedTicket.Id = nextId++;
-                    });
+        Ticket? addedTicket = null;
+        database.Setup(context => context.Tickets.Add(It.IsAny<Ticket>()))
+            .Callback<Ticket>(ticket =>
+            {
+                ticket.Id = generatedTicketId;
+                addedTicket = ticket;
+            });
+        database.Setup(context => context.SaveChangesAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(1);
 
-        var result = await _handler.Handle(command, CancellationToken.None);
-
-        result.Should().BeGreaterThan(0L);
-        _contextMock.Verify(x => x.Tickets.Add(It.IsAny<Ticket>()), Times.Once);
-        _contextMock.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
-    }
-
-    [Fact]
-    public async Task Handle_Should_Map_Fields_Correctly()
-    {
-        Ticket added = null!;
-        _contextMock.Setup(x => x.Tickets.Add(It.IsAny<Ticket>()))
-            .Callback<Ticket>(t => added = t);
-
-        var command = TestDataFactory.CreateCommand(
-            title: "支付失败",
-            description: "订单支付超时",
-            ticketType: TicketType.Bug,
-            priority: TicketPriority.Medium);
+        var handler = new CreateTicketCommandHandler(database.Object, currentUser.Object);
+        var command = new CreateTicketCommand(
+            "Payment failed",
+            "Payment request timed out",
+            TicketType.Bug,
+            TicketPriority.High);
+        using var cancellationSource = new CancellationTokenSource();
 
         // Act
-        await _handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, cancellationSource.Token);
 
         // Assert
-        added.Should().NotBeNull();
-        added.Title.Should().Be("支付失败");
-        added.Description.Should().Be("订单支付超时");
-        added.TicketType.Should().Be(TicketType.Bug);
-        added.Priority.Should().Be(TicketPriority.Medium);
-        added.CreatorId.Should().Be(42);
+        result.Should().Be(generatedTicketId);
+        addedTicket.Should().NotBeNull();
+        addedTicket!.Title.Should().Be("Payment failed");
+        addedTicket.Description.Should().Be("Payment request timed out");
+        addedTicket.TicketType.Should().Be(TicketType.Bug);
+        addedTicket.Priority.Should().Be(TicketPriority.High);
+        addedTicket.Status.Should().Be(TicketStatus.Open);
+        addedTicket.CreatorId.Should().Be(currentUserId);
+        database.Verify(context => context.Tickets.Add(It.IsAny<Ticket>()), Times.Once);
+        database.Verify(context => context.SaveChangesAsync(cancellationSource.Token), Times.Once);
+    }
+
+    [Fact]
+    public async Task Handle_Should_Propagate_Save_Failure()
+    {
+        // Arrange
+        var database = new Mock<ITicketingDbContext>();
+        var currentUser = new Mock<ICurrentUser>();
+        currentUser.Setup(user => user.UserId).Returns(1001L);
+        database.Setup(context => context.Tickets).ReturnsDbSet([]);
+        database.Setup(context => context.SaveChangesAsync(It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new InvalidOperationException("Database unavailable"));
+
+        var handler = new CreateTicketCommandHandler(database.Object, currentUser.Object);
+        var command = new CreateTicketCommand(
+            "Payment failed",
+            "Payment request timed out",
+            TicketType.Bug,
+            TicketPriority.High);
+
+        // Act
+        var act = () => handler.Handle(command, CancellationToken.None);
+
+        // Assert
+        await act.Should().ThrowAsync<InvalidOperationException>()
+            .WithMessage("Database unavailable");
+        database.Verify(context => context.Tickets.Add(It.IsAny<Ticket>()), Times.Once);
+        database.Verify(context => context.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 }
