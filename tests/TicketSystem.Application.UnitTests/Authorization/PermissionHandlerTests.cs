@@ -1,11 +1,11 @@
-using System.Security.Claims;
-using System.Text;
-using System.Text.Json;
 using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Distributed;
 using Moq;
+using System.Security.Claims;
+using System.Text;
+using System.Text.Json;
 using TicketSystem.Api.Authorization;
 using TicketSystem.Application.Common.Interfaces;
 

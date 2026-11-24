@@ -19,7 +19,7 @@ public class RegisterCommandHandlerTests
         db.Setup(x => x.Users).ReturnsDbSet(Array.Empty<User>());
         db.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
         User? added = null;
-        db.Setup(x => x.Users.Add(It.IsAny<User>())).Callback<User>(u => { added=u; u.Id=55; });
+        db.Setup(x => x.Users.Add(It.IsAny<User>())).Callback<User>(u => { added = u; u.Id = 55; });
         var handler = new RegisterCommandHandler(db.Object);
 
         var id = await handler.Handle(new RegisterCommand("alice_1", "Password9", "alice@example.com"), CancellationToken.None);

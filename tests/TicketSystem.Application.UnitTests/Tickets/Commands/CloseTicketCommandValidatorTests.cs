@@ -1,4 +1,3 @@
-using FluentAssertions;
 using FluentValidation.TestHelper;
 using TicketSystem.Application.Tickets.Commands.CloseTicket;
 

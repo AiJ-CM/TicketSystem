@@ -1,11 +1,11 @@
-using System.Collections;
-using System.Linq.Expressions;
 using AutoFixture;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Moq;
 using Moq.EntityFrameworkCore;
+using System.Collections;
+using System.Linq.Expressions;
 using TicketSystem.Application.Common.Interfaces;
 using TicketSystem.Domain.Entities;
 using TicketSystem.Infrastructure.Services;

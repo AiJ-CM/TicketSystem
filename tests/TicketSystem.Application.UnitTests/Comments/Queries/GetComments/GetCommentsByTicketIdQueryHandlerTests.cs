@@ -31,7 +31,7 @@ public class GetCommentsByTicketIdQueryHandlerTests
             .With(x => x.Commenter, commenter)
             .With(x => x.Content, "Older")
             .With(x => x.IsInternal, false)
-            .With(x => x.CreatedAt, new DateTime(2026,1,1))
+            .With(x => x.CreatedAt, new DateTime(2026, 1, 1))
             .With(x => x.CreatedBy, "alice")
             .Without(x => x.Ticket)
             .Create();
@@ -42,7 +42,7 @@ public class GetCommentsByTicketIdQueryHandlerTests
             .With(x => x.Commenter, commenter)
             .With(x => x.Content, "Newer")
             .With(x => x.IsInternal, true)
-            .With(x => x.CreatedAt, new DateTime(2026,1,2))
+            .With(x => x.CreatedAt, new DateTime(2026, 1, 2))
             .With(x => x.CreatedBy, "alice")
             .Without(x => x.Ticket)
             .Create();
@@ -53,7 +53,7 @@ public class GetCommentsByTicketIdQueryHandlerTests
             .With(x => x.Commenter, commenter)
             .With(x => x.Content, "Other ticket")
             .With(x => x.IsInternal, false)
-            .With(x => x.CreatedAt, new DateTime(2026,1,3))
+            .With(x => x.CreatedAt, new DateTime(2026, 1, 3))
             .With(x => x.CreatedBy, "alice")
             .Without(x => x.Ticket)
             .Create();

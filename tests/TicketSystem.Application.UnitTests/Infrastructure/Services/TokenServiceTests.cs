@@ -1,9 +1,9 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 using AutoFixture;
 using FluentAssertions;
 using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using TicketSystem.Domain.Entities;
 using TicketSystem.Infrastructure.Configuration;
 using TicketSystem.Infrastructure.Services;

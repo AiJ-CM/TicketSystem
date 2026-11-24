@@ -25,8 +25,8 @@ public class CreateCommentCommandHandlerTests
             .Create();
         var db = new Mock<ITicketingDbContext>();
         db.Setup(x => x.Tickets).ReturnsDbSet([ticket]);
-        TicketComment? added=null;
-        db.Setup(x => x.TicketComments.Add(It.IsAny<TicketComment>())).Callback<TicketComment>(c => { added=c; c.Id=88; });
+        TicketComment? added = null;
+        db.Setup(x => x.TicketComments.Add(It.IsAny<TicketComment>())).Callback<TicketComment>(c => { added = c; c.Id = 88; });
         db.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
         var current = new Mock<ICurrentUser>();
         current.SetupGet(x => x.UserId).Returns(42);
@@ -40,7 +40,7 @@ public class CreateCommentCommandHandlerTests
         added.CommenterId.Should().Be(42);
         added.Content.Should().Be("Investigating");
         added.IsInternal.Should().BeTrue();
-        db.Verify(x => x.TicketComments.Add(It.Is<TicketComment>(c => c.TicketId==10 && c.CommenterId==42)), Times.Once);
+        db.Verify(x => x.TicketComments.Add(It.Is<TicketComment>(c => c.TicketId == 10 && c.CommenterId == 42)), Times.Once);
         db.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 
