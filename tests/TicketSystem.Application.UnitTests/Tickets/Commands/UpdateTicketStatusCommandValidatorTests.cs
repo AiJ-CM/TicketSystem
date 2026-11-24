@@ -1,4 +1,4 @@
-锘縰sing FluentAssertions;
+using FluentAssertions;
 using FluentValidation.TestHelper;
 using TicketSystem.Application.Tickets.Commands.UpdateStatus;
 using TicketSystem.Domain.Enums;
@@ -18,7 +18,7 @@ public class UpdateTicketStatusCommandValidatorTests
     {
         var result = _validator.TestValidate(new UpdateTicketStatusCommand(0, (TicketStatus)999));
 
-        result.ShouldHaveValidationErrorFor(x => x.TicketId).WithErrorMessage("宸ュ崟ID蹇呴』澶т簬0");
-        result.ShouldHaveValidationErrorFor(x => x.NewStatus).WithErrorMessage("宸ュ崟鐘舵�佷笉鍚堟硶");
+        result.ShouldHaveValidationErrorFor(x => x.TicketId).WithErrorMessage("工单ID必须大于0");
+        result.ShouldHaveValidationErrorFor(x => x.NewStatus).WithErrorMessage("工单状态不合法");
     }
 }

@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using AutoFixture;
+using FluentAssertions;
 using Moq;
 using Moq.EntityFrameworkCore;
 using TicketSystem.Application.Common.Exceptions;
@@ -15,21 +16,33 @@ public class GetTicketQueryHandlerTests
     public async Task Handle_Should_Return_Ticket_Details_With_Creator_And_Assignee()
     {
         // Arrange
-        var assignee = new User { Id = 202, DisplayName = "Assigned agent" };
-        var ticket = new Ticket
-        {
-            Id = 17,
-            TicketNo = "TK-00017",
-            Title = "Payment failed",
-            Description = "Payment request timed out",
-            Status = TicketStatus.InProgress,
-            TicketType = TicketType.Bug,
-            Priority = TicketPriority.High,
-            CreatedBy = "Ticket owner",
-            CreatorId = 101,
-            AssigneeId = assignee.Id,
-            Assignee = assignee
-        };
+        var fixture = new Fixture();
+        var assignee = fixture.Build<User>()
+            .With(x => x.Id, 202)
+            .With(x => x.DisplayName, "Assigned agent")
+            .Without(x => x.CreatedTickets)
+            .Without(x => x.AssignedTickets)
+            .Without(x => x.Audits)
+            .Without(x => x.Comments)
+            .Without(x => x.Roles)
+            .Create();
+        var ticket = fixture.Build<Ticket>()
+            .With(x => x.Id, 17)
+            .With(x => x.TicketNo, "TK-00017")
+            .With(x => x.Title, "Payment failed")
+            .With(x => x.Description, "Payment request timed out")
+            .With(x => x.Status, TicketStatus.InProgress)
+            .With(x => x.TicketType, TicketType.Bug)
+            .With(x => x.Priority, TicketPriority.High)
+            .With(x => x.CreatedBy, "Ticket owner")
+            .With(x => x.CreatorId, 101)
+            .With(x => x.AssigneeId, (long?)202)
+            .With(x => x.Assignee, assignee)
+            .With(x => x.IsDeleted, false)
+            .Without(x => x.Creator)
+            .Without(x => x.Comments)
+            .Without(x => x.Audits)
+            .Create();
         var database = new Mock<ITicketingDbContext>();
         database.Setup(context => context.Tickets).ReturnsDbSet([ticket]);
         var handler = new GetTicketQueryHandler(database.Object);
@@ -53,13 +66,17 @@ public class GetTicketQueryHandlerTests
     public async Task Handle_Should_Return_Null_Assignee_When_Ticket_Is_Unassigned()
     {
         // Arrange
-        var ticket = new Ticket
-        {
-            Id = 18,
-            Title = "Unassigned ticket",
-            AssigneeId = null,
-            Assignee = null
-        };
+        var fixture = new Fixture();
+        var ticket = fixture.Build<Ticket>()
+            .With(x => x.Id, 18)
+            .With(x => x.Title, "Unassigned ticket")
+            .With(x => x.AssigneeId, (long?)null)
+            .With(x => x.Assignee, (User?)null)
+            .With(x => x.IsDeleted, false)
+            .Without(x => x.Creator)
+            .Without(x => x.Comments)
+            .Without(x => x.Audits)
+            .Create();
         var database = new Mock<ITicketingDbContext>();
         database.Setup(context => context.Tickets).ReturnsDbSet([ticket]);
         var handler = new GetTicketQueryHandler(database.Object);

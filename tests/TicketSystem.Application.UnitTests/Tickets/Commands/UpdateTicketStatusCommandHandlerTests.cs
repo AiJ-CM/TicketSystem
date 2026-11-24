@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using AutoFixture;
+using FluentAssertions;
 using Moq;
 using Moq.EntityFrameworkCore;
 using TicketSystem.Application.Common.Exceptions;
@@ -14,7 +15,16 @@ public class UpdateTicketStatusCommandHandlerTests
     [Fact]
     public async Task Handle_Should_Update_Allowed_Status_And_Save()
     {
-        var ticket = new Ticket { Id = 61, Status = TicketStatus.Open };
+        var fixture = new Fixture();
+        var ticket = fixture.Build<Ticket>()
+            .With(x => x.Id, 61)
+            .With(x => x.Status, TicketStatus.Open)
+            .With(x => x.IsDeleted, false)
+            .Without(x => x.Creator)
+            .Without(x => x.Assignee)
+            .Without(x => x.Comments)
+            .Without(x => x.Audits)
+            .Create();
         var context = new Mock<ITicketingDbContext>();
         context.Setup(x => x.Tickets).ReturnsDbSet([ticket]);
         var handler = new UpdateTicketStatusCommandHandler(context.Object);
@@ -28,7 +38,16 @@ public class UpdateTicketStatusCommandHandlerTests
     [Fact]
     public async Task Handle_Should_Reject_Disallowed_Transition_Without_Mutation()
     {
-        var ticket = new Ticket { Id = 61, Status = TicketStatus.Closed };
+        var fixture = new Fixture();
+        var ticket = fixture.Build<Ticket>()
+            .With(x => x.Id, 61)
+            .With(x => x.Status, TicketStatus.Closed)
+            .With(x => x.IsDeleted, false)
+            .Without(x => x.Creator)
+            .Without(x => x.Assignee)
+            .Without(x => x.Comments)
+            .Without(x => x.Audits)
+            .Create();
         var context = new Mock<ITicketingDbContext>();
         context.Setup(x => x.Tickets).ReturnsDbSet([ticket]);
         var handler = new UpdateTicketStatusCommandHandler(context.Object);

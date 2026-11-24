@@ -1,4 +1,4 @@
-ï»¿using FluentAssertions;
+using FluentAssertions;
 using FluentValidation.TestHelper;
 using TicketSystem.Application.Tickets.Queries.GetTicketList;
 
@@ -12,7 +12,7 @@ public class GetTicketListQueryValidatorTests
     public void Valid_Paging_Should_Pass() => _validator.TestValidate(new GetTicketListQuery { PageIndex = 1, PageSize = 20 }).ShouldNotHaveAnyValidationErrors();
 
     [Fact]
-    public void PageIndex_Below_One_Should_Fail() => _validator.TestValidate(new GetTicketListQuery { PageIndex = 0, PageSize = 20 }).ShouldHaveValidationErrorFor(x => x.PageIndex).WithErrorMessage("é¡µç ä¸èƒ½å°äº1");
+    public void PageIndex_Below_One_Should_Fail() => _validator.TestValidate(new GetTicketListQuery { PageIndex = 0, PageSize = 20 }).ShouldHaveValidationErrorFor(x => x.PageIndex).WithErrorMessage("Ò³Âë²»ÄÜĞ¡ÓÚ1");
 
     [Fact]
     public void PageSize_Outside_One_To_100_Should_Fail_For_Both_Boundaries()
@@ -20,7 +20,7 @@ public class GetTicketListQueryValidatorTests
         var below = _validator.TestValidate(new GetTicketListQuery { PageSize = 0 });
         var above = _validator.TestValidate(new GetTicketListQuery { PageSize = 101 });
 
-        below.ShouldHaveValidationErrorFor(x => x.PageSize).WithErrorMessage("æ¯é¡µæ¡æ•°å¿…é¡»åœ¨ 1 åˆ° 100 ä¹‹é—´");
-        above.ShouldHaveValidationErrorFor(x => x.PageSize).WithErrorMessage("æ¯é¡µæ¡æ•°å¿…é¡»åœ¨ 1 åˆ° 100 ä¹‹é—´");
+        below.ShouldHaveValidationErrorFor(x => x.PageSize).WithErrorMessage("Ã¿Ò³ÌõÊı±ØĞëÔÚ 1 µ½ 100 Ö®¼ä");
+        above.ShouldHaveValidationErrorFor(x => x.PageSize).WithErrorMessage("Ã¿Ò³ÌõÊı±ØĞëÔÚ 1 µ½ 100 Ö®¼ä");
     }
 }

@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using FluentValidation.TestHelper;
 using TicketSystem.Application.Tickets.Commands.CreateTicket;
 using TicketSystem.Domain.Enums;

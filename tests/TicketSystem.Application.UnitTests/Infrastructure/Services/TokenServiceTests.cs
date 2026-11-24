@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using AutoFixture;
 using FluentAssertions;
 using Microsoft.IdentityModel.Tokens;
 using TicketSystem.Domain.Entities;
@@ -11,12 +12,14 @@ namespace TicketSystem.Application.UnitTests.Infrastructure.Services;
 
 public class TokenServiceTests
 {
+    private readonly Fixture _fixture = new();
+
     [Fact]
     public void CreateToken_Should_Parse_With_Identity_Claims_And_No_Permissions()
     {
         var settings = CreateSettings();
         var sut = new TokenService(settings);
-        var user = new User { Id = 42, UserName = "alice" };
+        var user = CreateUser(42, "alice");
 
         var token = sut.CreateToken(user);
 
@@ -36,7 +39,7 @@ public class TokenServiceTests
         var sut = new TokenService(settings);
         var beforeCreation = DateTime.UtcNow;
 
-        var parsed = new JwtSecurityTokenHandler().ReadJwtToken(sut.CreateToken(new User { Id = 7, UserName = "bob" }));
+        var parsed = new JwtSecurityTokenHandler().ReadJwtToken(sut.CreateToken(CreateUser(7, "bob")));
 
         parsed.ValidTo.Should().BeOnOrAfter(beforeCreation.AddMinutes(44));
         parsed.ValidTo.Should().BeOnOrBefore(DateTime.UtcNow.AddMinutes(46));
@@ -49,10 +52,21 @@ public class TokenServiceTests
         settings.SecretKey = string.Empty;
         var sut = new TokenService(settings);
 
-        var act = () => sut.CreateToken(new User { Id = 8, UserName = "charlie" });
+        var act = () => sut.CreateToken(CreateUser(8, "charlie"));
 
         act.Should().Throw<Exception>();
     }
+
+    private User CreateUser(long id, string userName)
+        => _fixture.Build<User>()
+            .Without(user => user.CreatedTickets)
+            .Without(user => user.AssignedTickets)
+            .Without(user => user.Audits)
+            .Without(user => user.Comments)
+            .Without(user => user.Roles)
+            .With(user => user.Id, id)
+            .With(user => user.UserName, userName)
+            .Create();
 
     private static JwtSettings CreateSettings(int expiresMinutes = 30)
     {

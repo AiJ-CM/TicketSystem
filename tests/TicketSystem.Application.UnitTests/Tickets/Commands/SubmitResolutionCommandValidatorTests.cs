@@ -1,4 +1,4 @@
-ï»¿using FluentAssertions;
+using FluentAssertions;
 using FluentValidation.TestHelper;
 using TicketSystem.Application.Tickets.Commands.SubmitResolution;
 
@@ -10,9 +10,9 @@ public class SubmitResolutionCommandValidatorTests
 
     [Fact]
     public void Positive_Id_With_Note_Should_Pass()
-        => _validator.TestValidate(new SubmitResolutionCommand(1, "å·²è§£å†³")).ShouldNotHaveAnyValidationErrors();
+        => _validator.TestValidate(new SubmitResolutionCommand(1, "ÒÑ½â¾ö")).ShouldNotHaveAnyValidationErrors();
 
     [Fact]
     public void Invalid_TicketId_Should_Fail_With_TicketId_Property()
-        => _validator.TestValidate(new SubmitResolutionCommand(0, null)).ShouldHaveValidationErrorFor(x => x.TicketId).WithErrorMessage("å·¥å•IDå¿…é¡»å¤§äº0");
+        => _validator.TestValidate(new SubmitResolutionCommand(0, null)).ShouldHaveValidationErrorFor(x => x.TicketId).WithErrorMessage("¹¤µ¥ID±ØĞë´óÓÚ0");
 }

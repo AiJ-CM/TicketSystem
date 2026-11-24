@@ -1,3 +1,4 @@
+using AutoFixture;
 using FluentAssertions;
 using Moq;
 using Moq.EntityFrameworkCore;
@@ -13,7 +14,15 @@ public class CreateCommentCommandHandlerTests
     [Fact]
     public async Task Handle_Should_Associate_Comment_With_Ticket_And_Current_User()
     {
-        var ticket = new Ticket { Id=10, Title="Payment issue" };
+        var fixture = new Fixture();
+        var ticket = fixture.Build<Ticket>()
+            .With(x => x.Id, 10)
+            .With(x => x.Title, "Payment issue")
+            .Without(x => x.Creator)
+            .Without(x => x.Assignee)
+            .Without(x => x.Comments)
+            .Without(x => x.Audits)
+            .Create();
         var db = new Mock<ITicketingDbContext>();
         db.Setup(x => x.Tickets).ReturnsDbSet([ticket]);
         TicketComment? added=null;
@@ -56,7 +65,15 @@ public class CreateCommentCommandHandlerTests
     public async Task Handle_Should_Surface_SaveFailure()
     {
         var db = new Mock<ITicketingDbContext>();
-        db.Setup(x => x.Tickets).ReturnsDbSet([new Ticket { Id=10 }]);
+        var fixture = new Fixture();
+        var ticket = fixture.Build<Ticket>()
+            .With(x => x.Id, 10)
+            .Without(x => x.Creator)
+            .Without(x => x.Assignee)
+            .Without(x => x.Comments)
+            .Without(x => x.Audits)
+            .Create();
+        db.Setup(x => x.Tickets).ReturnsDbSet([ticket]);
         db.Setup(x => x.TicketComments).ReturnsDbSet(Array.Empty<TicketComment>());
         db.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>())).ThrowsAsync(new InvalidOperationException("database unavailable"));
         var current = new Mock<ICurrentUser>();

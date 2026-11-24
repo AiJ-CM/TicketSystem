@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using AutoFixture;
+using FluentAssertions;
 using Moq;
 using Moq.EntityFrameworkCore;
 using TicketSystem.Application.Common.Exceptions;
@@ -14,7 +15,16 @@ public class CloseTicketCommandHandlerTests
     [Fact]
     public async Task Handle_Should_Close_Closable_Ticket_And_Save()
     {
-        var ticket = new Ticket { Id = 31, Status = TicketStatus.Resolved };
+        var fixture = new Fixture();
+        var ticket = fixture.Build<Ticket>()
+            .With(x => x.Id, 31)
+            .With(x => x.Status, TicketStatus.Resolved)
+            .With(x => x.IsDeleted, false)
+            .Without(x => x.Creator)
+            .Without(x => x.Assignee)
+            .Without(x => x.Comments)
+            .Without(x => x.Audits)
+            .Create();
         var context = new Mock<ITicketingDbContext>();
         context.Setup(x => x.Tickets).ReturnsDbSet([ticket]);
         var handler = new CloseTicketCommandHandler(context.Object);
@@ -43,7 +53,17 @@ public class CloseTicketCommandHandlerTests
     [Fact]
     public async Task Handle_Should_Reject_Disallowed_Status_Without_Mutation()
     {
-        var ticket = new Ticket { Id = 31, Status = TicketStatus.Closed };
+        var fixture = new Fixture();
+        var ticket = fixture.Build<Ticket>()
+            .With(x => x.Id, 31)
+            .With(x => x.Status, TicketStatus.Closed)
+            .With(x => x.ClosedAt, (DateTime?)null)
+            .With(x => x.IsDeleted, false)
+            .Without(x => x.Creator)
+            .Without(x => x.Assignee)
+            .Without(x => x.Comments)
+            .Without(x => x.Audits)
+            .Create();
         var context = new Mock<ITicketingDbContext>();
         context.Setup(x => x.Tickets).ReturnsDbSet([ticket]);
         var handler = new CloseTicketCommandHandler(context.Object);

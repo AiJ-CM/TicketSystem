@@ -1,4 +1,4 @@
-锘縰sing FluentAssertions;
+using FluentAssertions;
 using FluentValidation.TestHelper;
 using TicketSystem.Application.Tickets.Queries.GetTicket;
 
@@ -13,5 +13,5 @@ public class GetTicketQueryValidatorTests
 
     [Fact]
     public void NonPositive_Id_Should_Fail_TicketId_Property()
-        => _validator.TestValidate(new GetTicketQuery(0)).ShouldHaveValidationErrorFor(x => x.Id).WithErrorMessage("宸ュ崟ID蹇呴』澶т簬0");
+        => _validator.TestValidate(new GetTicketQuery(0)).ShouldHaveValidationErrorFor(x => x.Id).WithErrorMessage("工单ID必须大于0");
 }

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Linq.Expressions;
+using AutoFixture;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
@@ -13,14 +14,42 @@ namespace TicketSystem.Application.UnitTests.Infrastructure.Services;
 
 public class DbUserPermissionProviderTests
 {
+    private readonly Fixture _fixture = new();
+
     [Fact]
     public async Task GetPermissionCodesAsync_Should_Return_Distinct_Permissions_For_Active_User()
     {
-        var readPermission = new Permission { Id = 1, PermissionCode = "ticket:read" };
-        var createPermission = new Permission { Id = 2, PermissionCode = "ticket:create" };
-        var roleOne = new Role { Id = 10, Permissions = [readPermission, createPermission] };
-        var roleTwo = new Role { Id = 11, Permissions = [readPermission] };
-        var user = new User { Id = 42, IsActive = true, Roles = [roleOne, roleTwo] };
+        var readPermission = _fixture.Build<Permission>()
+            .Without(permission => permission.Roles)
+            .With(permission => permission.Id, 1)
+            .With(permission => permission.PermissionCode, "ticket:read")
+            .With(permission => permission.IsDeleted, false)
+            .Create();
+        var createPermission = _fixture.Build<Permission>()
+            .Without(permission => permission.Roles)
+            .With(permission => permission.Id, 2)
+            .With(permission => permission.PermissionCode, "ticket:create")
+            .With(permission => permission.IsDeleted, false)
+            .Create();
+        var roleOne = _fixture.Build<Role>()
+            .Without(role => role.Users)
+            .With(role => role.Id, 10)
+            .With(role => role.Permissions, new List<Permission> { readPermission, createPermission })
+            .Create();
+        var roleTwo = _fixture.Build<Role>()
+            .Without(role => role.Users)
+            .With(role => role.Id, 11)
+            .With(role => role.Permissions, new List<Permission> { readPermission })
+            .Create();
+        var user = _fixture.Build<User>()
+            .Without(user => user.CreatedTickets)
+            .Without(user => user.AssignedTickets)
+            .Without(user => user.Audits)
+            .Without(user => user.Comments)
+            .With(user => user.Id, 42)
+            .With(user => user.IsActive, true)
+            .With(user => user.Roles, new List<Role> { roleOne, roleTwo })
+            .Create();
         var db = new Mock<ITicketingDbContext>();
         db.Setup(x => x.Users).ReturnsDbSet([user]);
         var sut = new DbUserPermissionProvider(db.Object);
@@ -34,7 +63,20 @@ public class DbUserPermissionProviderTests
     [Fact]
     public async Task GetPermissionCodesAsync_Should_Return_Empty_When_User_Has_No_Permissions()
     {
-        var user = new User { Id = 43, IsActive = true, Roles = [new Role { Id = 12 }] };
+        var role = _fixture.Build<Role>()
+            .Without(role => role.Users)
+            .With(role => role.Id, 12)
+            .With(role => role.Permissions, new List<Permission>())
+            .Create();
+        var user = _fixture.Build<User>()
+            .Without(user => user.CreatedTickets)
+            .Without(user => user.AssignedTickets)
+            .Without(user => user.Audits)
+            .Without(user => user.Comments)
+            .With(user => user.Id, 43)
+            .With(user => user.IsActive, true)
+            .With(user => user.Roles, new List<Role> { role })
+            .Create();
         var db = new Mock<ITicketingDbContext>();
         db.Setup(x => x.Users).ReturnsDbSet([user]);
         var sut = new DbUserPermissionProvider(db.Object);
@@ -52,16 +94,30 @@ public class DbUserPermissionProviderTests
 
         var inactiveDb = new Mock<ITicketingDbContext>();
         inactiveDb.Setup(x => x.Users).ReturnsDbSet([
-            new User
-            {
-                Id = 44,
-                IsActive = false,
-                Roles = [new Role
+            _fixture.Build<User>()
+                .Without(user => user.CreatedTickets)
+                .Without(user => user.AssignedTickets)
+                .Without(user => user.Audits)
+                .Without(user => user.Comments)
+                .With(user => user.Id, 44)
+                .With(user => user.IsActive, false)
+                .With(user => user.Roles, new List<Role>
                 {
-                    Id = 13,
-                    Permissions = [new Permission { Id = 3, PermissionCode = "ticket:delete" }]
-                }]
-            }
+                    _fixture.Build<Role>()
+                        .Without(role => role.Users)
+                        .With(role => role.Id, 13)
+                        .With(role => role.Permissions, new List<Permission>
+                        {
+                            _fixture.Build<Permission>()
+                                .Without(permission => permission.Roles)
+                                .With(permission => permission.Id, 3)
+                                .With(permission => permission.PermissionCode, "ticket:delete")
+                                .With(permission => permission.IsDeleted, false)
+                                .Create()
+                        })
+                        .Create()
+                })
+                .Create()
         ]);
 
         var unknownResult = await new DbUserPermissionProvider(unknownDb.Object)

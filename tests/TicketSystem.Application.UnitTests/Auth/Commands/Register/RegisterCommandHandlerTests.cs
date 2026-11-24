@@ -1,3 +1,4 @@
+using AutoFixture;
 using FluentAssertions;
 using Moq;
 using Moq.EntityFrameworkCore;
@@ -37,7 +38,17 @@ public class RegisterCommandHandlerTests
     [Fact]
     public async Task Handle_Should_Reject_Duplicate_Username_Without_Persisting()
     {
-        var existing = new User { Id=1, UserName="alice", Email="other@example.com" };
+        var fixture = new Fixture();
+        var existing = fixture.Build<User>()
+            .With(x => x.Id, 1)
+            .With(x => x.UserName, "alice")
+            .With(x => x.Email, "other@example.com")
+            .Without(x => x.CreatedTickets)
+            .Without(x => x.AssignedTickets)
+            .Without(x => x.Audits)
+            .Without(x => x.Comments)
+            .Without(x => x.Roles)
+            .Create();
         var db = new Mock<ITicketingDbContext>();
         db.Setup(x => x.Users).ReturnsDbSet([existing]);
         var handler = new RegisterCommandHandler(db.Object);
@@ -53,7 +64,17 @@ public class RegisterCommandHandlerTests
     [Fact]
     public async Task Handle_Should_Reject_Duplicate_Email_Without_Persisting()
     {
-        var existing = new User { Id=1, UserName="other", Email="alice@example.com" };
+        var fixture = new Fixture();
+        var existing = fixture.Build<User>()
+            .With(x => x.Id, 1)
+            .With(x => x.UserName, "other")
+            .With(x => x.Email, "alice@example.com")
+            .Without(x => x.CreatedTickets)
+            .Without(x => x.AssignedTickets)
+            .Without(x => x.Audits)
+            .Without(x => x.Comments)
+            .Without(x => x.Roles)
+            .Create();
         var db = new Mock<ITicketingDbContext>();
         db.Setup(x => x.Users).ReturnsDbSet([existing]);
         var handler = new RegisterCommandHandler(db.Object);

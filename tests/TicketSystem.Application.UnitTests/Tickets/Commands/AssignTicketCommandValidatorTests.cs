@@ -1,4 +1,4 @@
-锘縰sing FluentAssertions;
+using FluentAssertions;
 using FluentValidation.TestHelper;
 using TicketSystem.Application.Tickets.Commands.AssignTicket;
 
@@ -17,7 +17,7 @@ public class AssignTicketCommandValidatorTests
     {
         var result = _validator.TestValidate(new AssignTicketCommand(0, -1));
 
-        result.ShouldHaveValidationErrorFor(x => x.TicketId).WithErrorMessage("宸ュ崟ID蹇呴』澶т簬0");
-        result.ShouldHaveValidationErrorFor(x => x.AssigneeId).WithErrorMessage("琚垎閰嶄汉ID蹇呴』澶т簬0");
+        result.ShouldHaveValidationErrorFor(x => x.TicketId).WithErrorMessage("工单ID必须大于0");
+        result.ShouldHaveValidationErrorFor(x => x.AssigneeId).WithErrorMessage("被分配人ID必须大于0");
     }
 }

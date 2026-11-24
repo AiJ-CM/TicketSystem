@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using AutoFixture;
+using FluentAssertions;
 using Moq;
 using Moq.EntityFrameworkCore;
 using TicketSystem.Application.Common.Interfaces;
@@ -13,10 +14,50 @@ public class GetTicketListQueryHandlerTests
     [Fact]
     public async Task Handle_Should_Filter_Page_And_Report_Metadata()
     {
-        var creator = new User { Id = 31, DisplayName = "创建者" };
-        var assignee = new User { Id = 29, DisplayName = "处理人" };
-        var matching = new Ticket { Id = 2, Title = "匹配工单", Status = TicketStatus.InProgress, CreatorId = 31, Creator = creator, AssigneeId = 29, Assignee = assignee, CreatedAt = new DateTime(2026, 1, 2) };
-        var otherStatus = new Ticket { Id = 1, Title = "其他状态", Status = TicketStatus.Open, CreatorId = 31, Creator = creator, CreatedAt = new DateTime(2026, 1, 1) };
+        var fixture = new Fixture();
+        var creator = fixture.Build<User>()
+            .With(x => x.Id, 31)
+            .Without(x => x.CreatedTickets)
+            .Without(x => x.AssignedTickets)
+            .Without(x => x.Audits)
+            .Without(x => x.Comments)
+            .Without(x => x.Roles)
+            .Create();
+        var assignee = fixture.Build<User>()
+            .With(x => x.Id, 29)
+            .With(x => x.DisplayName, "???")
+            .Without(x => x.CreatedTickets)
+            .Without(x => x.AssignedTickets)
+            .Without(x => x.Audits)
+            .Without(x => x.Comments)
+            .Without(x => x.Roles)
+            .Create();
+        var matching = fixture.Build<Ticket>()
+            .With(x => x.Id, 2)
+            .With(x => x.Title, "????")
+            .With(x => x.Status, TicketStatus.InProgress)
+            .With(x => x.CreatorId, 31)
+            .With(x => x.Creator, creator)
+            .With(x => x.AssigneeId, (long?)29)
+            .With(x => x.Assignee, assignee)
+            .With(x => x.CreatedAt, new DateTime(2026, 1, 2))
+            .With(x => x.IsDeleted, false)
+            .Without(x => x.Comments)
+            .Without(x => x.Audits)
+            .Create();
+        var otherStatus = fixture.Build<Ticket>()
+            .With(x => x.Id, 1)
+            .With(x => x.Title, "????")
+            .With(x => x.Status, TicketStatus.Open)
+            .With(x => x.CreatorId, 31)
+            .With(x => x.Creator, creator)
+            .With(x => x.AssigneeId, (long?)null)
+            .With(x => x.Assignee, (User?)null)
+            .With(x => x.CreatedAt, new DateTime(2026, 1, 1))
+            .With(x => x.IsDeleted, false)
+            .Without(x => x.Comments)
+            .Without(x => x.Audits)
+            .Create();
         var context = new Mock<ITicketingDbContext>();
         context.Setup(x => x.Tickets).ReturnsDbSet([otherStatus, matching]);
         var handler = new GetTicketListQueryHandler(context.Object);
@@ -27,15 +68,27 @@ public class GetTicketListQueryHandlerTests
         result.TotalPages.Should().Be(1);
         result.Items.Should().ContainSingle();
         result.Items[0].Id.Should().Be(2);
-        result.Items[0].Title.Should().Be("匹配工单");
-        result.Items[0].AssigneeName.Should().Be("处理人");
+        result.Items[0].Title.Should().Be("????");
+        result.Items[0].AssigneeName.Should().Be("???");
     }
 
     [Fact]
     public async Task Handle_Should_Return_Empty_For_OutOfRange_Page()
     {
+        var fixture = new Fixture();
+        var onlyTicket = fixture.Build<Ticket>()
+            .With(x => x.Id, 1)
+            .With(x => x.Title, "????")
+            .With(x => x.Status, TicketStatus.Open)
+            .With(x => x.CreatorId, 31)
+            .With(x => x.IsDeleted, false)
+            .Without(x => x.Creator)
+            .Without(x => x.Assignee)
+            .Without(x => x.Comments)
+            .Without(x => x.Audits)
+            .Create();
         var context = new Mock<ITicketingDbContext>();
-        context.Setup(x => x.Tickets).ReturnsDbSet([new Ticket { Id = 1, Title = "唯一工单", Status = TicketStatus.Open, CreatorId = 31 }]);
+        context.Setup(x => x.Tickets).ReturnsDbSet([onlyTicket]);
         var handler = new GetTicketListQueryHandler(context.Object);
 
         var result = await handler.Handle(new GetTicketListQuery { PageIndex = 99, PageSize = 20 }, CancellationToken.None);

@@ -1,3 +1,4 @@
+using AutoFixture;
 using FluentAssertions;
 using Moq;
 using Moq.EntityFrameworkCore;
@@ -12,10 +13,50 @@ public class GetCommentsByTicketIdQueryHandlerTests
     [Fact]
     public async Task Handle_Should_Return_Only_Requested_Ticket_Comments_Newest_First()
     {
-        var commenter = new User { Id=5, UserName="alice", DisplayName="Alice" };
-        var older = new TicketComment { Id=1, TicketId=10, CommenterId=5, Commenter=commenter, Content="Older", IsInternal=false, CreatedAt=new DateTime(2026,1,1), CreatedBy="alice" };
-        var newer = new TicketComment { Id=2, TicketId=10, CommenterId=5, Commenter=commenter, Content="Newer", IsInternal=true, CreatedAt=new DateTime(2026,1,2), CreatedBy="alice" };
-        var other = new TicketComment { Id=3, TicketId=11, CommenterId=5, Commenter=commenter, Content="Other ticket", CreatedAt=new DateTime(2026,1,3), CreatedBy="alice" };
+        var fixture = new Fixture();
+        var commenter = fixture.Build<User>()
+            .With(x => x.Id, 5)
+            .With(x => x.UserName, "alice")
+            .With(x => x.DisplayName, "Alice")
+            .Without(x => x.CreatedTickets)
+            .Without(x => x.AssignedTickets)
+            .Without(x => x.Audits)
+            .Without(x => x.Comments)
+            .Without(x => x.Roles)
+            .Create();
+        var older = fixture.Build<TicketComment>()
+            .With(x => x.Id, 1)
+            .With(x => x.TicketId, 10)
+            .With(x => x.CommenterId, 5)
+            .With(x => x.Commenter, commenter)
+            .With(x => x.Content, "Older")
+            .With(x => x.IsInternal, false)
+            .With(x => x.CreatedAt, new DateTime(2026,1,1))
+            .With(x => x.CreatedBy, "alice")
+            .Without(x => x.Ticket)
+            .Create();
+        var newer = fixture.Build<TicketComment>()
+            .With(x => x.Id, 2)
+            .With(x => x.TicketId, 10)
+            .With(x => x.CommenterId, 5)
+            .With(x => x.Commenter, commenter)
+            .With(x => x.Content, "Newer")
+            .With(x => x.IsInternal, true)
+            .With(x => x.CreatedAt, new DateTime(2026,1,2))
+            .With(x => x.CreatedBy, "alice")
+            .Without(x => x.Ticket)
+            .Create();
+        var other = fixture.Build<TicketComment>()
+            .With(x => x.Id, 3)
+            .With(x => x.TicketId, 11)
+            .With(x => x.CommenterId, 5)
+            .With(x => x.Commenter, commenter)
+            .With(x => x.Content, "Other ticket")
+            .With(x => x.IsInternal, false)
+            .With(x => x.CreatedAt, new DateTime(2026,1,3))
+            .With(x => x.CreatedBy, "alice")
+            .Without(x => x.Ticket)
+            .Create();
         var db = new Mock<ITicketingDbContext>();
         db.Setup(x => x.TicketComments).ReturnsDbSet([older, newer, other]);
         var handler = new GetCommentsByTicketIdQueryHandler(db.Object);
@@ -47,10 +88,27 @@ public class GetCommentsByTicketIdQueryHandlerTests
     [Fact]
     public async Task Handle_Should_Exclude_Comments_From_Other_Tickets()
     {
-        var commenter = new User { Id=5, UserName="alice" };
+        var fixture = new Fixture();
+        var commenter = fixture.Build<User>()
+            .With(x => x.Id, 5)
+            .With(x => x.UserName, "alice")
+            .Without(x => x.CreatedTickets)
+            .Without(x => x.AssignedTickets)
+            .Without(x => x.Audits)
+            .Without(x => x.Comments)
+            .Without(x => x.Roles)
+            .Create();
         var db = new Mock<ITicketingDbContext>();
         db.Setup(x => x.TicketComments).ReturnsDbSet([
-            new TicketComment { Id=20, TicketId=11, CommenterId=5, Commenter=commenter, Content="Wrong", CreatedBy="alice" }
+            fixture.Build<TicketComment>()
+                .With(x => x.Id, 20)
+                .With(x => x.TicketId, 11)
+                .With(x => x.CommenterId, 5)
+                .With(x => x.Commenter, commenter)
+                .With(x => x.Content, "Wrong")
+                .With(x => x.CreatedBy, "alice")
+                .Without(x => x.Ticket)
+                .Create()
         ]);
         var handler = new GetCommentsByTicketIdQueryHandler(db.Object);
 
