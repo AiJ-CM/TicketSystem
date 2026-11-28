@@ -1,5 +1,4 @@
-﻿using MediatR;
-using TicketSystem.Application.Auth.Dtos;
+﻿using TicketSystem.Application.Auth.Dtos;
 
 namespace TicketSystem.Application.Auth.Queries.GetUser;
 

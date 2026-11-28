@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
-
-namespace TicketSystem.Infrastructure.AuditBuilders;
+﻿namespace TicketSystem.Infrastructure.AuditBuilders;
 
 public interface IAuditBuilderFactory
 {

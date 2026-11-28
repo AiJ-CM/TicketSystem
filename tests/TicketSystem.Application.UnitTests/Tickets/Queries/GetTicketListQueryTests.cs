@@ -1,5 +1,4 @@
-﻿using FluentAssertions;
-using TicketSystem.Application.Tickets.Queries.GetTicketList;
+﻿using TicketSystem.Application.Tickets.Queries.GetTicketList;
 using TicketSystem.Domain.Enums;
 
 namespace TicketSystem.Application.UnitTests.Tickets.Queries;

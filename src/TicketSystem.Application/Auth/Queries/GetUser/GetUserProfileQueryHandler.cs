@@ -1,9 +1,5 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using TicketSystem.Application.Auth.Dtos;
+﻿using TicketSystem.Application.Auth.Dtos;
 using TicketSystem.Application.Auth.Mappers;
-using TicketSystem.Application.Common.Exceptions;
-using TicketSystem.Application.Common.Interfaces;
 
 namespace TicketSystem.Application.Auth.Queries.GetUser;
 

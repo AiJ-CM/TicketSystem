@@ -1,4 +1,3 @@
-using FluentAssertions;
 using TicketSystem.Application.Auth.Queries.Login;
 
 namespace TicketSystem.Application.UnitTests.Auth.Queries.Login;

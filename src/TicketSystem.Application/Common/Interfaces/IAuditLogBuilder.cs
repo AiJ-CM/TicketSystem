@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
-using TicketSystem.Domain.Entities;
 
 namespace TicketSystem.Application.Common.Interfaces;
 

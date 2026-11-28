@@ -1,4 +1,3 @@
-using FluentAssertions;
 using FluentValidation.TestHelper;
 using TicketSystem.Application.Comments.Commands.CreateComment;
 

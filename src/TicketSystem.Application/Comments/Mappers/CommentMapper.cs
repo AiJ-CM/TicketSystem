@@ -1,7 +1,6 @@
 ﻿using Riok.Mapperly.Abstractions;
 using TicketSystem.Application.Comments.Dtos;
 using TicketSystem.Application.Mappers;
-using TicketSystem.Domain.Entities;
 
 namespace TicketSystem.Application.Comments.Mappers;
 

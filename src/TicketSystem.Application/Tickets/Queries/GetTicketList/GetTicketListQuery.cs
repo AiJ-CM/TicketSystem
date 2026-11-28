@@ -1,7 +1,5 @@
-﻿using MediatR;
-using TicketSystem.Application.Common.Models;
+﻿using TicketSystem.Application.Common.Models;
 using TicketSystem.Application.Tickets.Dtos;
-using TicketSystem.Domain.Enums;
 
 namespace TicketSystem.Application.Tickets.Queries.GetTicketList;
 

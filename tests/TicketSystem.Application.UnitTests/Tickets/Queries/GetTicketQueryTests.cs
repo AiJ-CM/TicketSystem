@@ -1,5 +1,4 @@
-﻿using FluentAssertions;
-using TicketSystem.Application.Tickets.Queries.GetTicket;
+﻿using TicketSystem.Application.Tickets.Queries.GetTicket;
 
 namespace TicketSystem.Application.UnitTests.Tickets.Queries;
 

@@ -1,4 +1,3 @@
-using FluentAssertions;
 using TicketSystem.Application.Auth.Commands.Register;
 
 namespace TicketSystem.Application.UnitTests.Auth.Commands.Register;

@@ -1,4 +1,3 @@
-using FluentAssertions;
 using TicketSystem.Application.Comments.Commands.CreateComment;
 
 namespace TicketSystem.Application.UnitTests.Comments.Commands.CreateComment;

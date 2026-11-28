@@ -1,5 +1,4 @@
-﻿using MediatR;
-using TicketSystem.Application.Comments.Dtos;
+﻿using TicketSystem.Application.Comments.Dtos;
 
 namespace TicketSystem.Application.Comments.Queries.GetComments;
 

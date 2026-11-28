@@ -1,7 +1,5 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TicketSystem.Api.Authorization;
 using TicketSystem.Application.Comments.Commands.CreateComment;
 using TicketSystem.Application.Comments.Queries.GetComments;
 

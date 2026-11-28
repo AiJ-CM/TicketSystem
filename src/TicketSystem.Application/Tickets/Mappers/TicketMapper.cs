@@ -1,6 +1,5 @@
 ﻿using Riok.Mapperly.Abstractions;
 using TicketSystem.Application.Tickets.Dtos;
-using TicketSystem.Domain.Entities;
 
 namespace TicketSystem.Application.Tickets.Mappers;
 

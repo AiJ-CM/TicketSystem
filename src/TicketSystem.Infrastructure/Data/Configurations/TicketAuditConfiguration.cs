@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using TicketSystem.Domain.Entities;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace TicketSystem.Infrastructure.Data.Configurations;
 

@@ -1,6 +1,4 @@
 ﻿using System.Collections.Frozen;
-using TicketSystem.Application.Common.Exceptions;
-using TicketSystem.Domain.Enums;
 
 namespace TicketSystem.Application.Common.StateMachine;
 
@@ -8,37 +6,37 @@ public static class TicketStatusTransition
 {
     private static readonly FrozenDictionary<TicketStatus, FrozenSet<TicketStatus>> Rules =
         new Dictionary<TicketStatus, HashSet<TicketStatus>>
-    {
-        [TicketStatus.Open] =
+        {
+            [TicketStatus.Open] =
         [
             TicketStatus.InProgress,
             TicketStatus.Resolved,
             TicketStatus.Closed,
             TicketStatus.PendingUser
         ],
-        [TicketStatus.InProgress] =
+            [TicketStatus.InProgress] =
         [
             TicketStatus.Resolved,
             TicketStatus.PendingUser,
             TicketStatus.Closed
         ],
-        [TicketStatus.PendingUser] =
+            [TicketStatus.PendingUser] =
         [
             TicketStatus.InProgress,
             TicketStatus.Closed
         ],
-        [TicketStatus.Resolved] =
+            [TicketStatus.Resolved] =
         [
             TicketStatus.Reopened,
             TicketStatus.Closed
         ],
-        [TicketStatus.Reopened] =
+            [TicketStatus.Reopened] =
         [
             TicketStatus.InProgress,
             TicketStatus.Resolved
         ],
-        [TicketStatus.Closed] = []
-    }.ToFrozenDictionary(
+            [TicketStatus.Closed] = []
+        }.ToFrozenDictionary(
         pair => pair.Key,
         pair => pair.Value.ToFrozenSet());
 

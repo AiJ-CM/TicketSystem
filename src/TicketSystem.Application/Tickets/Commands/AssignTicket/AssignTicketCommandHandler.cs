@@ -1,9 +1,4 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using TicketSystem.Application.Common.Exceptions;
-using TicketSystem.Application.Common.Interfaces;
-
-namespace TicketSystem.Application.Tickets.Commands.AssignTicket;
+﻿namespace TicketSystem.Application.Tickets.Commands.AssignTicket;
 
 public class AssignTicketCommandHandler(ITicketingDbContext context) : IRequestHandler<AssignTicketCommand>
 {

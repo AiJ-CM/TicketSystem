@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Authorization;
-
 namespace TicketSystem.Api.Authorization;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]

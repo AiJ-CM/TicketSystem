@@ -1,8 +1,4 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using TicketSystem.Application.Common.Interfaces;
-
-namespace TicketSystem.Application.Tickets.Commands.DeleteTicket;
+﻿namespace TicketSystem.Application.Tickets.Commands.DeleteTicket;
 
 public class DeleteTicketCommandHandler(ITicketingDbContext context) : IRequestHandler<DeleteTicketCommand>
 {

@@ -1,8 +1,5 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using TicketSystem.Application.Audit.Dtos;
+﻿using TicketSystem.Application.Audit.Dtos;
 using TicketSystem.Application.Audit.Mappers;
-using TicketSystem.Application.Common.Interfaces;
 
 namespace TicketSystem.Application.Audit.Queries.GetTicketAudits;
 

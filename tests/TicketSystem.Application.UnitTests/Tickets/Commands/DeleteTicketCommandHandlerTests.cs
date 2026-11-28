@@ -1,8 +1,4 @@
-﻿using AutoFixture;
-using FluentAssertions;
-using Moq;
-using Moq.EntityFrameworkCore;
-using TicketSystem.Application.Common.Interfaces;
+﻿using TicketSystem.Application.Common.Interfaces;
 using TicketSystem.Application.Tickets.Commands.DeleteTicket;
 using TicketSystem.Domain.Entities;
 

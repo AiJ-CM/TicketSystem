@@ -1,6 +1,4 @@
-﻿using MediatR;
-
-namespace TicketSystem.Application.Tickets.Commands.SubmitResolution;
+﻿namespace TicketSystem.Application.Tickets.Commands.SubmitResolution;
 
 public record SubmitResolutionCommand(
     long TicketId,

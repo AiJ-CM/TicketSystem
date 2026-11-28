@@ -1,6 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-using TicketSystem.Application.Common.Interfaces;
-
 namespace TicketSystem.Infrastructure.Services;
 
 public class DbUserPermissionProvider(ITicketingDbContext db) : IUserPermissionProvider

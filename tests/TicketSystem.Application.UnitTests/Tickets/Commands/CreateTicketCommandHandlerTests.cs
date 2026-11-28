@@ -1,7 +1,4 @@
-﻿using FluentAssertions;
-using Moq;
-using Moq.EntityFrameworkCore;
-using TicketSystem.Application.Common.Interfaces;
+﻿using TicketSystem.Application.Common.Interfaces;
 using TicketSystem.Application.Tickets.Commands.CreateTicket;
 using TicketSystem.Domain.Entities;
 using TicketSystem.Domain.Enums;

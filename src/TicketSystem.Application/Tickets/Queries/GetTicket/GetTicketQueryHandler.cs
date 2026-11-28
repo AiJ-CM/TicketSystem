@@ -1,8 +1,4 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using TicketSystem.Application.Common.Exceptions;
-using TicketSystem.Application.Common.Interfaces;
-using TicketSystem.Application.Tickets.Dtos;
+﻿using TicketSystem.Application.Tickets.Dtos;
 using TicketSystem.Application.Tickets.Mappers;
 
 namespace TicketSystem.Application.Tickets.Queries.GetTicket;

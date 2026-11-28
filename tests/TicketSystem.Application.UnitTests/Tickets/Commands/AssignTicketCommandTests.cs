@@ -1,5 +1,4 @@
-﻿using FluentAssertions;
-using TicketSystem.Application.Tickets.Commands.AssignTicket;
+﻿using TicketSystem.Application.Tickets.Commands.AssignTicket;
 
 namespace TicketSystem.Application.UnitTests.Tickets.Commands;
 

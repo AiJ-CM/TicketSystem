@@ -1,5 +1,4 @@
-﻿using FluentAssertions;
-using TicketSystem.Application.Tickets.Commands.UpdateStatus;
+﻿using TicketSystem.Application.Tickets.Commands.UpdateStatus;
 using TicketSystem.Domain.Enums;
 
 namespace TicketSystem.Application.UnitTests.Tickets.Commands;

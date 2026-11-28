@@ -1,8 +1,5 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using TicketSystem.Application.Comments.Dtos;
+﻿using TicketSystem.Application.Comments.Dtos;
 using TicketSystem.Application.Comments.Mappers;
-using TicketSystem.Application.Common.Interfaces;
 
 namespace TicketSystem.Application.Comments.Queries.GetComments;
 

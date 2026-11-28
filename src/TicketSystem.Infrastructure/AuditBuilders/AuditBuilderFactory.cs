@@ -1,7 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
-using TicketSystem.Application.Common.Interfaces;
-
-namespace TicketSystem.Infrastructure.AuditBuilders;
+﻿namespace TicketSystem.Infrastructure.AuditBuilders;
 
 public sealed class AuditBuilderFactory : IAuditBuilderFactory
 {

@@ -1,8 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.EntityFrameworkCore.Diagnostics;
-using TicketSystem.Application.Common.Interfaces;
-using TicketSystem.Domain.Entities;
+﻿using Microsoft.EntityFrameworkCore.Diagnostics;
 using TicketSystem.Domain.Entities.Common;
 using TicketSystem.Infrastructure.AuditBuilders;
 

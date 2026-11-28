@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using MediatR;
 
 namespace TicketSystem.Application.Common.Behaviors;
 

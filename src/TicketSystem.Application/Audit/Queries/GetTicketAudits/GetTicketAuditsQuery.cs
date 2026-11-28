@@ -1,5 +1,4 @@
-﻿using MediatR;
-using TicketSystem.Application.Audit.Dtos;
+﻿using TicketSystem.Application.Audit.Dtos;
 
 namespace TicketSystem.Application.Audit.Queries.GetTicketAudits;
 

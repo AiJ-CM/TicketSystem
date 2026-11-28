@@ -1,5 +1,4 @@
-﻿using FluentAssertions;
-using TicketSystem.Application.Tickets.Commands.CreateTicket;
+﻿using TicketSystem.Application.Tickets.Commands.CreateTicket;
 using TicketSystem.Domain.Enums;
 
 namespace TicketSystem.Application.UnitTests.Tickets.Commands;

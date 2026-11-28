@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TicketSystem.Application.Auth.Commands.Register;
 using TicketSystem.Application.Auth.Queries.GetUser;

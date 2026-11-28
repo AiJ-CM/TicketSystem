@@ -1,9 +1,4 @@
-﻿using MediatR;
-using TicketSystem.Application.Common.Interfaces;
-using TicketSystem.Domain.Entities;
-using TicketSystem.Domain.Enums;
-
-namespace TicketSystem.Application.Tickets.Commands.CreateTicket;
+﻿namespace TicketSystem.Application.Tickets.Commands.CreateTicket;
 
 public class CreateTicketCommandHandler(
     ITicketingDbContext context, ICurrentUser currentUser) : IRequestHandler<CreateTicketCommand, long>

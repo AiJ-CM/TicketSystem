@@ -1,10 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using TicketSystem.Application.Common.Interfaces;
-using TicketSystem.Domain.Entities;
-using TicketSystem.Domain.Enums;
-
-namespace TicketSystem.Infrastructure.AuditBuilders;
+﻿namespace TicketSystem.Infrastructure.AuditBuilders;
 
 public class TicketCommentAuditLogBuilder(TimeProvider timeProvider) : IAuditLogBuilder
 {

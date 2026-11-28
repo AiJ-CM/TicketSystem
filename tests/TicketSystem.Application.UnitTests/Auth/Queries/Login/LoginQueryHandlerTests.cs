@@ -1,7 +1,3 @@
-using AutoFixture;
-using FluentAssertions;
-using Moq;
-using Moq.EntityFrameworkCore;
 using TicketSystem.Application.Auth.Queries.Login;
 using TicketSystem.Application.Common.Exceptions;
 using TicketSystem.Application.Common.Interfaces;

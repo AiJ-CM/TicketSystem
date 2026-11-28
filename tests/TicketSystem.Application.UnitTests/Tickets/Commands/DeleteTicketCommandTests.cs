@@ -1,5 +1,4 @@
-﻿using FluentAssertions;
-using TicketSystem.Application.Tickets.Commands.DeleteTicket;
+﻿using TicketSystem.Application.Tickets.Commands.DeleteTicket;
 
 namespace TicketSystem.Application.UnitTests.Tickets.Commands;
 

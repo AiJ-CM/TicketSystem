@@ -1,5 +1,4 @@
-﻿using FluentAssertions;
-using TicketSystem.Application.Tickets.Commands.SubmitResolution;
+﻿using TicketSystem.Application.Tickets.Commands.SubmitResolution;
 
 namespace TicketSystem.Application.UnitTests.Tickets.Commands;
 

@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using TicketSystem.Api.Authorization;
-using TicketSystem.Api.Filters;
+﻿using TicketSystem.Api.Filters;
 using TicketSystem.Api.Middlewares;
 using TicketSystem.Api.Transformers;
 

@@ -1,8 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using TicketSystem.Application.Common.Interfaces;
-using TicketSystem.Domain.Entities;
-
-namespace TicketSystem.Infrastructure.Data;
+﻿namespace TicketSystem.Infrastructure.Data;
 
 public class TicketingDbContext(DbContextOptions<TicketingDbContext> options) : DbContext(options), ITicketingDbContext
 {

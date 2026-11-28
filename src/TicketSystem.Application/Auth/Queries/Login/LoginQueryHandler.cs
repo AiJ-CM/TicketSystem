@@ -1,8 +1,4 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using TicketSystem.Application.Common.Exceptions;
-using TicketSystem.Application.Common.Interfaces;
-using static BCrypt.Net.BCrypt;
+﻿using static BCrypt.Net.BCrypt;
 
 namespace TicketSystem.Application.Auth.Queries.Login;
 

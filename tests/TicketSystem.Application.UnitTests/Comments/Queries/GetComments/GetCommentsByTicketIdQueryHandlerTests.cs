@@ -1,7 +1,3 @@
-using AutoFixture;
-using FluentAssertions;
-using Moq;
-using Moq.EntityFrameworkCore;
 using TicketSystem.Application.Comments.Queries.GetComments;
 using TicketSystem.Application.Common.Interfaces;
 using TicketSystem.Domain.Entities;

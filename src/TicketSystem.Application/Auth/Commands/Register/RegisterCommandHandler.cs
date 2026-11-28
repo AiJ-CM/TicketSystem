@@ -1,9 +1,4 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using TicketSystem.Application.Common.Exceptions;
-using TicketSystem.Application.Common.Interfaces;
-using TicketSystem.Domain.Entities;
-using static BCrypt.Net.BCrypt;
+﻿using static BCrypt.Net.BCrypt;
 
 namespace TicketSystem.Application.Auth.Commands.Register;
 
@@ -12,7 +7,7 @@ public class RegisterCommandHandler(ITicketingDbContext db, TimeProvider timePro
     public async Task<long> Handle(
         RegisterCommand request, CancellationToken ct)
     {
-        if (await db.Users.AnyAsync(u =>string.Equals(u.UserName, request.Username, StringComparison.OrdinalIgnoreCase), ct))
+        if (await db.Users.AnyAsync(u => string.Equals(u.UserName, request.Username, StringComparison.OrdinalIgnoreCase), ct))
         {
             throw new BusinessException("Username already exists.", ErrorCodeEnum.UserCodeDuplicate);
         }

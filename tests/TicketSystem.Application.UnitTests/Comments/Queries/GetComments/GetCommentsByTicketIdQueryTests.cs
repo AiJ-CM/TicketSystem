@@ -1,4 +1,3 @@
-using FluentAssertions;
 using TicketSystem.Application.Comments.Queries.GetComments;
 
 namespace TicketSystem.Application.UnitTests.Comments.Queries.GetComments;

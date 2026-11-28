@@ -1,7 +1,4 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using TicketSystem.Application.Common.Interfaces;
-using TicketSystem.Application.Common.Models;
+﻿using TicketSystem.Application.Common.Models;
 using TicketSystem.Application.Tickets.Dtos;
 using TicketSystem.Application.Tickets.Mappers;
 

@@ -1,5 +1,4 @@
-﻿using FluentAssertions;
-using TicketSystem.Api.Authorization;
+﻿using TicketSystem.Api.Authorization;
 
 namespace TicketSystem.Application.UnitTests.Authorization;
 
