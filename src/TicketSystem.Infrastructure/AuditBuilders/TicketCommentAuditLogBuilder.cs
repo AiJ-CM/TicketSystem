@@ -10,29 +10,25 @@ public class TicketCommentAuditLogBuilder : IAuditLogBuilder
 {
     public Type GetSupportedType() => typeof(TicketComment);
 
-    public TicketAudit BuildAuditLog(EntityEntry entry, long operatorId)
+    public TicketAudit? BuildAuditLog(EntityEntry entry, long operatorId)
     {
         var comment = entry.Entity as TicketComment
             ?? throw new InvalidOperationException("TicketCommentAuditLogBuilder 仅适用于 TicketComment 实体");
+
+        if (entry.State != EntityState.Added) return null;
 
         var audit = new TicketAudit
         {
             TicketId = comment.TicketId,
             OperatorId = operatorId,
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow,
+            Action = TicketAuditAction.AddedComment,
+            BusinessNote = comment.IsInternal switch
+            {
+                true => "添加了内部评论",
+                false => "添加了评论"
+            }
         };
-
-        switch (entry.State)
-        {
-            case EntityState.Added:
-                audit.Action = TicketAuditAction.AddedComment;
-                var internalStr = comment.IsInternal ? "内部" : string.Empty;
-                audit.BusinessNote = $"添加了{internalStr}评论";
-                break;
-
-            default:
-                return null!;
-        }
 
         return audit;
     }

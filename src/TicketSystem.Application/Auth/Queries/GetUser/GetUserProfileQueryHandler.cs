@@ -14,7 +14,7 @@ public class GetUserProfileQueryHandler(ITicketingDbContext context, ICurrentUse
         var user = await context.Users
             .FirstOrDefaultAsync(u => u.Id == currentUser.UserId, ct);
 
-        return user == null
+        return user is null
             ? throw new BusinessException(
                 $"User with id '{currentUser.UserId}' not found.",
                 errorCode: ErrorCodeEnum.UserNotFound

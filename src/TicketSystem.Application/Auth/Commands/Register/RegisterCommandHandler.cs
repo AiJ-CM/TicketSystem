@@ -12,12 +12,12 @@ public class RegisterCommandHandler(ITicketingDbContext db) : IRequestHandler<Re
     public async Task<long> Handle(
         RegisterCommand request, CancellationToken ct)
     {
-        if (await db.Users.AnyAsync(u => u.UserName == request.Username, ct))
+        if (await db.Users.AnyAsync(u =>string.Equals(u.UserName, request.Username, StringComparison.OrdinalIgnoreCase), ct))
         {
             throw new BusinessException("Username already exists.", ErrorCodeEnum.UserCodeDuplicate);
         }
 
-        if (await db.Users.AnyAsync(u => u.Email == request.Email, ct))
+        if (await db.Users.AnyAsync(u => string.Equals(u.Email, request.Email, StringComparison.OrdinalIgnoreCase), ct))
         {
             throw new BusinessException("Email is already registered.", ErrorCodeEnum.EmailDuplicate);
         }

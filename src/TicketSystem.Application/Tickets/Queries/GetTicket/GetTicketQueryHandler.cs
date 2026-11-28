@@ -15,7 +15,7 @@ public class GetTicketQueryHandler(ITicketingDbContext context) : IRequestHandle
             .Include(t => t.Assignee)
             .FirstOrDefaultAsync(t => t.Id == request.Id, cancellationToken);
 
-        return ticket == null
+        return ticket is null
             ? throw new BusinessException($"工单 {request.Id} 不存在", ErrorCodeEnum.TicketNotFound)
             : TicketMapper.ToDtoWithUserInfo(ticket);
     }

@@ -16,7 +16,7 @@ public class LoginQueryHandler(
         var user = await db.Users
             .FirstOrDefaultAsync(u => u.UserName == request.Username, ct);
 
-        if (user == null || !user.IsActive || !Verify(request.Password, user.PasswordHash))
+        if (user is null || !user.IsActive || !Verify(request.Password, user.PasswordHash))
         {
             throw new BusinessException("Invalid username or password", ErrorCodeEnum.LoginFailed);
         }

@@ -10,59 +10,64 @@ public class TicketAuditLogBuilder : IAuditLogBuilder
 {
     public Type GetSupportedType() => typeof(Ticket);
 
-    public TicketAudit BuildAuditLog(EntityEntry entry, long operatorId)
+    public TicketAudit? BuildAuditLog(EntityEntry entry, long operatorId)
     {
         var ticket = entry.Entity as Ticket
             ?? throw new InvalidOperationException("TicketAuditLogBuilder 仅适用于 Ticket 实体");
 
-        var audit = new TicketAudit
+        return (entry.State, entry) switch
         {
-            OperatorId = operatorId,
-            CreatedAt = DateTime.UtcNow
+            // 新增工单
+            (EntityState.Added, _) => BuildAudit(a =>
+            {
+                a.Action = TicketAuditAction.Created;
+                a.BusinessNote = $"创建了工单（操作人ID: {operatorId}）";
+            }),
+
+            // 状态变更
+            (EntityState.Modified, var e) when e.Property(nameof(Ticket.Status)).IsModified =>
+                BuildAudit(a =>
+                {
+                    var statusProp = e.Property(nameof(Ticket.Status));
+                    var oldStatus = statusProp.OriginalValue?.ToString() ?? "未知";
+
+                    a.Action = TicketAuditAction.StatusChanged;
+                    a.OldValue = oldStatus;
+                    a.NewValue = ticket.Status.ToString();
+                    a.BusinessNote = $"工单《{ticket.Title}》状态由 {oldStatus} 变更为 {ticket.Status}";
+                }),
+
+            // 指派人变更
+            (EntityState.Modified, var e) when e.Property(nameof(Ticket.AssigneeId)).IsModified =>
+                BuildAudit(a =>
+                {
+                    var assigneeProp = e.Property(nameof(Ticket.AssigneeId));
+                    var oldAssigneeId = assigneeProp.OriginalValue as long?;
+
+                    a.Action = TicketAuditAction.Assigned;
+                    a.OldValue = oldAssigneeId?.ToString();
+                    a.NewValue = ticket.AssigneeId.ToString();
+                    a.BusinessNote = oldAssigneeId.HasValue
+                        ? $"将工单从 '用户ID：{oldAssigneeId}' 重新指派给了 '用户ID：{ticket.AssigneeId}'"
+                        : $"将工单指派给了 '用户ID：{ticket.AssigneeId}'";
+                }),
+
+            _ => null
         };
 
-        switch (entry.State)
+        TicketAudit BuildAudit(Action<TicketAudit> configure)
         {
-            case EntityState.Added:
-                audit.Action = TicketAuditAction.Created;
-                audit.BusinessNote = $"创建了工单（操作人ID: {operatorId}）";
-                break;
+            var audit = new TicketAudit
+            {
+                TicketId = ticket.Id,
+                OperatorId = operatorId,
+                CreatedAt = DateTime.UtcNow
+            };
 
-            case EntityState.Modified:
-                if (entry.Property("Status").IsModified)
-                {
-                    var oldStatus = entry.Property("Status").OriginalValue?.ToString() ?? "未知";
-                    var newStatus = ticket.Status;
+            configure(audit);
 
-                    audit.Action = TicketAuditAction.StatusChanged;
-                    audit.OldValue = oldStatus;
-                    audit.NewValue = newStatus.ToString();
-                    audit.BusinessNote = $"工单《{ticket.Title}》状态由 {oldStatus} 变更为 {newStatus}";
-                }
-                else if (entry.Property("AssigneeId").IsModified)
-                {
-                    var oldAssigneeId = entry.Property("AssigneeId").OriginalValue as long?;
-                    var newAssigneeId = ticket.AssigneeId;
-
-                    audit.Action = TicketAuditAction.Assigned;
-                    audit.OldValue = oldAssigneeId?.ToString();
-                    audit.NewValue = newAssigneeId.ToString();
-                    audit.BusinessNote = oldAssigneeId.HasValue
-                        ? $"将工单从 '用户ID：{oldAssigneeId}' 重新指派给了 '用户ID：{newAssigneeId}'"
-                        : $"将工单指派给了 '用户ID：{newAssigneeId}'";
-                }
-                else
-                {
-                    return null!;
-                }
-
-                break;
-
-            default:
-                return null!;
+            return audit;
         }
-
-        return audit;
     }
 
     public void AttachAudit(TicketAudit audit, EntityEntry entry)

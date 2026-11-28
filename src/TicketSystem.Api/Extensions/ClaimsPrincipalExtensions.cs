@@ -9,7 +9,7 @@ public static class ClaimsPrincipalExtensions
     {
         var claim = user.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        if (claim == null || !long.TryParse(claim, out var userId))
+        if (string.IsNullOrWhiteSpace(claim) || !long.TryParse(claim, out var userId))
             throw new BusinessException("当前用户身份凭证无效，请重新登录。", ErrorCodeEnum.Unauthorized);
 
         return userId;
@@ -18,7 +18,7 @@ public static class ClaimsPrincipalExtensions
     public static string GetUserName(this ClaimsPrincipal user)
     {
         var claim = user.FindFirstValue(ClaimTypes.Name);
-        if (string.IsNullOrEmpty(claim))
+        if (string.IsNullOrWhiteSpace(claim))
             throw new BusinessException("当前用户缺少用户名凭证，请重新登录。", ErrorCodeEnum.Unauthorized);
         return claim;
     }
