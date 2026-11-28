@@ -18,7 +18,7 @@ public class TokenServiceTests
     public void CreateToken_Should_Parse_With_Identity_Claims_And_No_Permissions()
     {
         var settings = CreateSettings();
-        var sut = new TokenService(settings);
+        var sut = new TokenService(settings, TimeProvider.System);
         var user = CreateUser(42, "alice");
 
         var token = sut.CreateToken(user);
@@ -36,7 +36,7 @@ public class TokenServiceTests
     public void CreateToken_Should_Use_Configured_Expiry()
     {
         var settings = CreateSettings(expiresMinutes: 45);
-        var sut = new TokenService(settings);
+        var sut = new TokenService(settings, TimeProvider.System);
         var beforeCreation = DateTime.UtcNow;
 
         var parsed = new JwtSecurityTokenHandler().ReadJwtToken(sut.CreateToken(CreateUser(7, "bob")));
@@ -50,7 +50,7 @@ public class TokenServiceTests
     {
         var settings = CreateSettings();
         settings.SecretKey = string.Empty;
-        var sut = new TokenService(settings);
+        var sut = new TokenService(settings, TimeProvider.System);
 
         var act = () => sut.CreateToken(CreateUser(8, "charlie"));
 

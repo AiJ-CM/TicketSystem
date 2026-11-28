@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using System.Text;
 using TicketSystem.Application.Common.Interfaces;
 using TicketSystem.Infrastructure.AuditBuilders;
@@ -17,6 +18,7 @@ public static class InfrastructureExtensions
         // 1. 绑定 JWT 配置并注册
         var jwtSettings = configuration.GetSection("JwtSettings").Get<JwtSettings>() ?? new JwtSettings();
         services.AddSingleton(jwtSettings);
+        services.TryAddSingleton(TimeProvider.System);
 
         // 2. 注册数据库和拦截器
         services.AddScoped<AuditableEntityInterceptor>();

@@ -7,7 +7,7 @@ using static BCrypt.Net.BCrypt;
 
 namespace TicketSystem.Application.Auth.Commands.Register;
 
-public class RegisterCommandHandler(ITicketingDbContext db) : IRequestHandler<RegisterCommand, long>
+public class RegisterCommandHandler(ITicketingDbContext db, TimeProvider timeProvider) : IRequestHandler<RegisterCommand, long>
 {
     public async Task<long> Handle(
         RegisterCommand request, CancellationToken ct)
@@ -28,7 +28,7 @@ public class RegisterCommandHandler(ITicketingDbContext db) : IRequestHandler<Re
             PasswordHash = HashPassword(request.Password),
             Email = request.Email,
             IsActive = true,
-            CreatedAt = DateTime.UtcNow,
+            CreatedAt = timeProvider.GetUtcNow().UtcDateTime,
             CreatedBy = request.Username,
         };
 

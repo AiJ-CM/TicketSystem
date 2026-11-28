@@ -6,7 +6,7 @@ using TicketSystem.Application.Common.Models;
 
 namespace TicketSystem.Api.Middlewares;
 
-public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IExceptionHandler
+public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger, TimeProvider timeProvider) : IExceptionHandler
 {
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
@@ -25,7 +25,7 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IE
             exception,
             "Request {RequestId} failed at {Time} with {StatusCode}",
             requestId,
-            DateTime.UtcNow,
+            timeProvider.GetUtcNow().UtcDateTime,
             exception switch
             {
                 BusinessException => 400,

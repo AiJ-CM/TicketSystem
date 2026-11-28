@@ -7,7 +7,7 @@ using TicketSystem.Domain.Enums;
 
 namespace TicketSystem.Application.Tickets.Commands.CloseTicket;
 
-public class CloseTicketCommandHandler(ITicketingDbContext context) : IRequestHandler<CloseTicketCommand>
+public class CloseTicketCommandHandler(ITicketingDbContext context, TimeProvider timeProvider) : IRequestHandler<CloseTicketCommand>
 {
     public async Task Handle(CloseTicketCommand command, CancellationToken ct)
     {
@@ -20,7 +20,7 @@ public class CloseTicketCommandHandler(ITicketingDbContext context) : IRequestHa
             throw new BusinessException(message, errorCode);
 
         ticket.Status = TicketStatus.Closed;
-        ticket.ClosedAt = DateTime.UtcNow;
+        ticket.ClosedAt = timeProvider.GetUtcNow().UtcDateTime;
 
         context.Tickets.Update(ticket);
 

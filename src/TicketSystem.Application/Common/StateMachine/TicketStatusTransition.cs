@@ -1,11 +1,13 @@
-﻿using TicketSystem.Application.Common.Exceptions;
+﻿using System.Collections.Frozen;
+using TicketSystem.Application.Common.Exceptions;
 using TicketSystem.Domain.Enums;
 
 namespace TicketSystem.Application.Common.StateMachine;
 
 public static class TicketStatusTransition
 {
-    private static readonly Dictionary<TicketStatus, HashSet<TicketStatus>> Rules = new()
+    private static readonly FrozenDictionary<TicketStatus, FrozenSet<TicketStatus>> Rules =
+        new Dictionary<TicketStatus, HashSet<TicketStatus>>
     {
         [TicketStatus.Open] =
         [
@@ -36,7 +38,9 @@ public static class TicketStatusTransition
             TicketStatus.Resolved
         ],
         [TicketStatus.Closed] = []
-    };
+    }.ToFrozenDictionary(
+        pair => pair.Key,
+        pair => pair.Value.ToFrozenSet());
 
     /// <summary>
     /// 仅判断是否允许流转，不抛异常，适合前端按钮是否置灰
@@ -67,7 +71,7 @@ public static class TicketStatusTransition
     public static IReadOnlyCollection<TicketStatus> GetNextStatuses(TicketStatus from)
     {
         return Rules.TryGetValue(from, out var targets)
-            ? targets.ToList()
-            : Array.Empty<TicketStatus>();
+            ? targets
+            : FrozenSet<TicketStatus>.Empty;
     }
 }

@@ -20,7 +20,7 @@ public class RegisterCommandHandlerTests
         db.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
         User? added = null;
         db.Setup(x => x.Users.Add(It.IsAny<User>())).Callback<User>(u => { added = u; u.Id = 55; });
-        var handler = new RegisterCommandHandler(db.Object);
+        var handler = new RegisterCommandHandler(db.Object, TimeProvider.System);
 
         var id = await handler.Handle(new RegisterCommand("alice_1", "Password9", "alice@example.com"), CancellationToken.None);
 
@@ -51,7 +51,7 @@ public class RegisterCommandHandlerTests
             .Create();
         var db = new Mock<ITicketingDbContext>();
         db.Setup(x => x.Users).ReturnsDbSet([existing]);
-        var handler = new RegisterCommandHandler(db.Object);
+        var handler = new RegisterCommandHandler(db.Object, TimeProvider.System);
 
         var act = async () => await handler.Handle(new RegisterCommand("alice", "Password9", "alice@example.com"), CancellationToken.None);
 
@@ -77,7 +77,7 @@ public class RegisterCommandHandlerTests
             .Create();
         var db = new Mock<ITicketingDbContext>();
         db.Setup(x => x.Users).ReturnsDbSet([existing]);
-        var handler = new RegisterCommandHandler(db.Object);
+        var handler = new RegisterCommandHandler(db.Object, TimeProvider.System);
 
         var act = async () => await handler.Handle(new RegisterCommand("alice", "Password9", "alice@example.com"), CancellationToken.None);
 
@@ -93,7 +93,7 @@ public class RegisterCommandHandlerTests
         var db = new Mock<ITicketingDbContext>();
         db.Setup(x => x.Users).ReturnsDbSet(Array.Empty<User>());
         db.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>())).ThrowsAsync(new InvalidOperationException("database unavailable"));
-        var handler = new RegisterCommandHandler(db.Object);
+        var handler = new RegisterCommandHandler(db.Object, TimeProvider.System);
 
         var act = async () => await handler.Handle(new RegisterCommand("alice", "Password9", "alice@example.com"), CancellationToken.None);
 

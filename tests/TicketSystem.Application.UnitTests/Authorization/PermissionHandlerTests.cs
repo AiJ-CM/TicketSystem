@@ -53,6 +53,41 @@ public class PermissionHandlerTests
     }
 
     [Fact]
+    public async Task HandleAsync_Should_Load_Only_Once_For_Concurrent_Cache_Misses()
+    {
+        var principal = CreatePrincipal(42);
+        var requirement = new PermissionRequirement("ticket:create");
+        var cache = new Mock<IDistributedCache>();
+        var provider = new Mock<IUserPermissionProvider>();
+        byte[]? cachedValue = null;
+        var providerCalls = 0;
+
+        cache.Setup(x => x.GetAsync("ticket-system:permissions:42", It.IsAny<CancellationToken>()))
+            .Returns(() => Task.FromResult(cachedValue));
+        cache.Setup(x => x.SetAsync("ticket-system:permissions:42", It.IsAny<byte[]>(), It.IsAny<DistributedCacheEntryOptions>(), It.IsAny<CancellationToken>()))
+            .Callback<string, byte[], DistributedCacheEntryOptions, CancellationToken>((_, value, _, _) => cachedValue = value)
+            .Returns(Task.CompletedTask);
+        provider.Setup(x => x.GetPermissionCodesAsync(42, It.IsAny<CancellationToken>()))
+            .Returns(async () =>
+            {
+                Interlocked.Increment(ref providerCalls);
+                await Task.Delay(20);
+                return new[] { "ticket:create" };
+            });
+
+        var handler = CreateHandler(principal, cache, provider);
+        var contexts = Enumerable.Range(0, 20)
+            .Select(_ => new AuthorizationHandlerContext([requirement], principal, null))
+            .ToArray();
+
+        await Task.WhenAll(contexts.Select(context => handler.HandleAsync(context)));
+
+        contexts.Should().OnlyContain(context => context.HasSucceeded);
+        providerCalls.Should().Be(1);
+        cache.Verify(x => x.SetAsync("ticket-system:permissions:42", It.IsAny<byte[]>(), It.IsAny<DistributedCacheEntryOptions>(), It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Fact]
     public async Task HandleAsync_Should_Not_Succeed_When_NameIdentifier_Is_Missing()
     {
         var principal = new ClaimsPrincipal(new ClaimsIdentity(Array.Empty<Claim>(), "Bearer"));

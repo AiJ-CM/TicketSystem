@@ -8,14 +8,14 @@ using TicketSystem.Infrastructure.Configuration;
 
 namespace TicketSystem.Infrastructure.Services;
 
-public class TokenService(JwtSettings settings) : ITokenService
+public class TokenService(JwtSettings settings, TimeProvider timeProvider) : ITokenService
 {
     public string CreateToken(User user)
     {
         var key = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(settings.SecretKey));
 
-        var expires = DateTime.UtcNow
+        var expires = timeProvider.GetUtcNow().UtcDateTime
             .AddMinutes(settings.ExpiresMinutes);
 
         // JWT 只保留身份所需的基础信息；权限由服务端从 Redis/数据库动态校验。

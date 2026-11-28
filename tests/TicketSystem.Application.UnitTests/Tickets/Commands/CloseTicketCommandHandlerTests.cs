@@ -27,7 +27,7 @@ public class CloseTicketCommandHandlerTests
             .Create();
         var context = new Mock<ITicketingDbContext>();
         context.Setup(x => x.Tickets).ReturnsDbSet([ticket]);
-        var handler = new CloseTicketCommandHandler(context.Object);
+        var handler = new CloseTicketCommandHandler(context.Object, TimeProvider.System);
 
         await handler.Handle(new CloseTicketCommand(31), CancellationToken.None);
 
@@ -42,7 +42,7 @@ public class CloseTicketCommandHandlerTests
     {
         var context = new Mock<ITicketingDbContext>();
         context.Setup(x => x.Tickets).ReturnsDbSet(Array.Empty<Ticket>());
-        var handler = new CloseTicketCommandHandler(context.Object);
+        var handler = new CloseTicketCommandHandler(context.Object, TimeProvider.System);
 
         var act = () => handler.Handle(new CloseTicketCommand(404), CancellationToken.None);
 
@@ -66,7 +66,7 @@ public class CloseTicketCommandHandlerTests
             .Create();
         var context = new Mock<ITicketingDbContext>();
         context.Setup(x => x.Tickets).ReturnsDbSet([ticket]);
-        var handler = new CloseTicketCommandHandler(context.Object);
+        var handler = new CloseTicketCommandHandler(context.Object, TimeProvider.System);
 
         var act = () => handler.Handle(new CloseTicketCommand(31), CancellationToken.None);
 

@@ -6,7 +6,7 @@ using TicketSystem.Domain.Enums;
 
 namespace TicketSystem.Infrastructure.AuditBuilders;
 
-public class TicketCommentAuditLogBuilder : IAuditLogBuilder
+public class TicketCommentAuditLogBuilder(TimeProvider timeProvider) : IAuditLogBuilder
 {
     public Type GetSupportedType() => typeof(TicketComment);
 
@@ -21,7 +21,7 @@ public class TicketCommentAuditLogBuilder : IAuditLogBuilder
         {
             TicketId = comment.TicketId,
             OperatorId = operatorId,
-            CreatedAt = DateTime.UtcNow,
+            CreatedAt = timeProvider.GetUtcNow().UtcDateTime,
             Action = TicketAuditAction.AddedComment,
             BusinessNote = comment.IsInternal switch
             {

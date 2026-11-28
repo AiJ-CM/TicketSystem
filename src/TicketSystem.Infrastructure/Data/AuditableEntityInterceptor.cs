@@ -8,7 +8,10 @@ using TicketSystem.Infrastructure.AuditBuilders;
 
 namespace TicketSystem.Infrastructure.Data;
 
-public class AuditableEntityInterceptor(ICurrentUser currentUser, IAuditBuilderFactory auditFactory) : SaveChangesInterceptor
+public class AuditableEntityInterceptor(
+    ICurrentUser currentUser,
+    IAuditBuilderFactory auditFactory,
+    TimeProvider timeProvider) : SaveChangesInterceptor
 {
     public override ValueTask<InterceptionResult<int>> SavingChangesAsync(
         DbContextEventData eventData,
@@ -21,7 +24,7 @@ public class AuditableEntityInterceptor(ICurrentUser currentUser, IAuditBuilderF
             if (allEntries?.Count > 0 && allEntries.Any(e => e.Entity is not TicketAudit && e.Entity is not User))
             {
                 // 统一上下文：一次保存内时间戳、用户完全一致
-                var now = DateTime.UtcNow;
+                var now = timeProvider.GetUtcNow().UtcDateTime;
                 var user = currentUser.UserName;
                 var userId = currentUser.UserId;
 

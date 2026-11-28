@@ -6,7 +6,7 @@ using TicketSystem.Domain.Enums;
 
 namespace TicketSystem.Infrastructure.AuditBuilders;
 
-public class TicketAuditLogBuilder : IAuditLogBuilder
+public class TicketAuditLogBuilder(TimeProvider timeProvider) : IAuditLogBuilder
 {
     public Type GetSupportedType() => typeof(Ticket);
 
@@ -61,7 +61,7 @@ public class TicketAuditLogBuilder : IAuditLogBuilder
             {
                 TicketId = ticket.Id,
                 OperatorId = operatorId,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = timeProvider.GetUtcNow().UtcDateTime
             };
 
             configure(audit);
